@@ -10,6 +10,7 @@ class Token:
 	def __repr__(self):
 		return f"Token(type={self.type}, value={self.value})"
 	def __str__(self):
+		pass
 def main():
 	if len(sys.argv) < 3:
 		print("Usage: ./your_program.sh tokenize <filename>", file=sys.stderr)
