@@ -24,7 +24,7 @@ The Objective is have one ZynkPy for a lot of languages.
 The Actual Objective is:
 
 - [ ] AST
-- [ ] Finnish Lexer
+- [ ] Lexer
 - [ ] Bytecode
 - [ ] Castellano (Spanish)
 - [ ] English
