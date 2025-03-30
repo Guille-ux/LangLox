@@ -30,7 +30,7 @@ class UnexpectedTokenError(ParseError):
 		self.column = column
 		super().__init__(self.line, self.column, self.additional, self.type)
 
-class LoxError(Exception):
+class ZynkPyError(Exception):
 	def __init__(self, line, column, error_msg):
 		self.line = line
 		self.column = column
@@ -91,7 +91,7 @@ class Lexer:
 			self.advance()
 		self.advance()
 		if is_at_end():
-			error = LoxError(self.line, self.column, "Unterminated string.")
+			error = ZynkPyError(self.line, self.column, "Unterminated string.")
 			error.print_error()
 			self.error = True
 			return False

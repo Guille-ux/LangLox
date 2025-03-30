@@ -16,7 +16,7 @@
 from setuptools import setup, find_packages
 
 setup(
-	name="llox",
+	name="ZynkPy",
 	version="0.1.0",
 	description="A semi-interpreted programming language",
 	long_description=open("README.md").read(),
