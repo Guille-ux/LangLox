@@ -14,10 +14,18 @@
 <!-- Copyright (c) 2025 Guillermo Leira Temes
 <!-- -->
 
-# LangLox
+# ZynkPy
 *Programming in your mother tongue*
 
-LangLox is a implementation of Lox, the programming language of **Crafting Interpreters** in:
-- Castellano (Spanish)
-- English
-- Galego (Galician)
+ZynkPy is a programming language made by me while i read **Craftin Interpreters**
+
+The Objective is have one ZynkPy for a lot of languages.
+
+The Actual Objective is:
+
+- [ ] AST
+- [ ] Finnish Lexer
+- [ ] Bytecode
+- [ ] Castellano (Spanish)
+- [ ] English
+- [ ] Galego (Galician)
