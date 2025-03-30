@@ -40,6 +40,7 @@ class TokenType(Enum):
 	TRUE = "TRUE"
 	VAR = "VAR"
 	WHILE = "WHILE"
+	CALL = "CALL"
 	
 	#operands
 	PLUS = "+"
@@ -72,36 +73,22 @@ class TokenType(Enum):
 	DOT = "."
 
 class Token:
-	def __init__(self, tipo, valor, line, column):
+	def __init__(self, tipo, lexem, valor, line, column):
 		self.line = line
 		self.column = column
 		self.type = tipo
 		self.value = valor
 		self.included = []
+		self.lexem = lexem
 	def include(self, token):
 		self.included.append(token)
 	def __repr__(self):
-		return f"Token(type={self.type}, value={self.value})"
+		return f"Token(type={self.type}, lexem={self.lexem}, value={self.value})"
 	def __str__(self):
-		return f"Token of the type {self.type} with the value {self.value}"
+		return f"Token of the type {self.type} with the value {self.value} with the lexem {self.lexem}"
 	def __eq__(self, other):
 		return self.type == other.type and self.value == other.value
 	def get_pos(self):
 		return (self.line, self.column)
-class NullToken(Token):
-	def __init__(self, tipo, line, column):
-		super().__init__(tipo, None, line, column)
-	def __repr__(self):
-		return f"NullToken(type={self.type})"
-	def __str__(self):
-		return f"A null token with type {self.type}"
-	def __eq__(self, other):
-		return self.type == other.type
 
-class NumberToken(Token):
-	def __init__(self, value, line, column):
-		tipo = TokenType.INT if isinstance(value, int) else TokenType.FLOAT
-		super().__init__(tipo, value, line, column)
-	def __str__(self):
-		return str(self.value)
 
