@@ -25,7 +25,7 @@ setup(
 	packages=find_packages(where="src"),
 	install_requires=[],
 	entry_points={
-		"console_scripts":["llox=cli:main"]
+		"console_scripts":["zynk=cli:main"]
 	},
 	# metadata
 	author="Guillermo Leira Temes",
