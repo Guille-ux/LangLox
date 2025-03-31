@@ -12,35 +12,12 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 # 
 # Copyright (c) 2025 Guillermo Leira Temes
-import tokens
-
-# Sintax Error
-class ParseError(Exception):
-	def __init__(self, line, column, additional, error_type):
-		self.line = line
-		self.column = column
-		self.message = f"[line {self.line}, column {self.column}] Error: {error_type}: {additional}"
-		super().__init__(self.message)
-	def print_error(self):
-		print(self.message, file=sys.stderr)
-class UnexpectedTokenError(ParseError):
-	def __init__(self, line, column, err_token):
-		self.line = line
-		self.type = "Unexpected Token"
-		self.additional = err_token
-		self.column = column
-		super().__init__(self.line, self.column, self.additional, self.type)
-
-class ZynkPyError(Exception):
-	def __init__(self, line, column, error_msg):
-		self.line = line
-		self.column = column
-		self.message = f"[line {self.line}, column {self.column}] Error: {error_msg}"
-		super().__init__(self.message)
-	def print_error(self):
-		print(self.message, file=sys.stderr)
 
 # Lexic Analyzer
+from . import errors
+from . import tokens
+
+
 class ZynkLexer:
 	def __init__(self, source_code, big_debug=False):
 		self.source = source_code
@@ -51,6 +28,7 @@ class ZynkLexer:
 		self.line = 1
 		self.column = 1
 		self.error = False
+		self.var_set = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_" # set de caracteres que puede usar una variable
 	def scan_tokens(self):
 		while not self.is_at_end():
 			self.start = self.current
@@ -71,7 +49,9 @@ class ZynkLexer:
 			return True
 		if self.scan_three(char):
 			return True
-		if self.scan_four(char):
+		if self.scan_four():
+			return True
+		if self.lexe_var():
 			return True
 		#Error
 		if trigger:
@@ -79,7 +59,7 @@ class ZynkLexer:
 		else:
 			#implementar manejo de error léxico para unexpected Token
 			self.error = True
-			error = UnexpectedTokenError(self.line, self.column, self.source[self.current-1])
+			error = errors.UnexpectedTokenError(self.line, self.column, self.source[self.current-1])
 			error.print_error()
 			if self.debug:
 				raise error
@@ -100,8 +80,8 @@ class ZynkLexer:
 		while not self.is_at_end() and self.peek() != '"':
 			self.advance()
 		self.advance()
-		if is_at_end():
-			error = ZynkPyError(self.line, self.column, "Unterminated string.")
+		if self.is_at_end():
+			error = errors.ZynkPyError(self.line, self.column, "Unterminated string.")
 			error.print_error()
 			self.error = True
 			if self.debug:
@@ -112,7 +92,7 @@ class ZynkLexer:
 		if self.is_at_end():
 			return "\0"
 		return self.source[self.current]
-	def scan_four(self, char): # para otras expresiones
+	def scan_four(self): # para otras expresiones
 		if self.match_sequence("null"):
 			self.add_token(tokens.TokenType.NULL, "null")
 			return True
@@ -131,7 +111,7 @@ class ZynkLexer:
 		elif self.match_sequence("print"):
 			self.add_token(tokens.TokenType.PRINT, "print")
 			return True
-		elif self.match_sequence("call")
+		elif self.match_sequence("call"):
 			self.add_token(tokens.TokenType.CALL, "call")
 			return True
 		elif self.match_sequence("var"):
@@ -268,31 +248,26 @@ class ZynkLexer:
 		return True
 	def add_token(self, token_type, lexeme="", literal=None):
 
-		self.tokens.append(tokens.Token(token_type, lexeme, self.line, self.column))
+		self.tokens.append(tokens.Token(token_type, lexeme, literal, self.line, self.column))
 	def num_lexer(self): #una utilidad para tokenizar números, se le llama cuando se encuentra un número
 		consumed = False
 		while not self.is_at_end():
 			char = self.advance()
 			if consumed == True:
-				if not char.isdigit():
+				if not self.peek().char.isdigit():
 					break #we have readed the complet number
 			elif consumed == False:
 				if char == "." and consumed==False:
 					consumed = True
-				elif char.isdigit():
+				elif self.peek().isdigit():
 					pass
 				else:
-					#ERROR CARACTER NO ESPERADO
-					error = UnexpectedTokenError(self.line, self.column, self.source[self.current-1])
-					self.error = True
-					error.print_error()
-					if self.debug:
-						raise error
+					break
 		return consumed
 		self.advance()
 	def get_actual(self):
 		return self.source[self.current-1]
-	def match_sequence(self, to_prove)
+	def match_sequence(self, to_prove):
 		ret_point = self.current-1
 		first = self.get_actual()
 		if first != to_prove[0]:
@@ -302,8 +277,20 @@ class ZynkLexer:
 			if not self.match(to_prove[i]):
 				self.current = ret_point
 				return False
+			i += 1
 		if self.match(" "):
 			return True
 		else:
 			self.current = ret_point
 			return False
+	def lexe_var(self):
+		trigger = False
+		char = self.get_actual()
+		while not self.is_at_end():
+			if char not in self.var_set:
+				break
+			else:
+				trigger = True
+				char = self.advance()
+		if trigger:
+			self.add_token(tokens.TokenType.IDENTIFIER, self.source[self.start:self.current])
