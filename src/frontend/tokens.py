@@ -30,10 +30,9 @@ class TokenType(Enum):
 	CLASS = "CLASS"
 	ELSE = "ELSE"
 	FALSE = "FALSE"
-	FUN = "FUN"
+	FUNC = "FUNC"
 	FOR = "FOR"
 	IF = "IF"
-	PRINT = "PRINT"
 	RETURN = "RETURN"
 	SUPER = "SUPER"
 	THIS = "THIS"
@@ -41,6 +40,7 @@ class TokenType(Enum):
 	VAR = "VAR"
 	WHILE = "WHILE"
 	CALL = "CALL"
+	NEW = "NEW"
 	
 	#operands
 	PLUS = "+"
@@ -72,6 +72,10 @@ class TokenType(Enum):
 	EOF = "EOF"
 	DOT = "."
 
+	#built-in
+	PRINT = "PRINT"
+	IMPORT = "IMPORT"
+	
 class Token:
 	def __init__(self, tipo, lexem, valor, line, column):
 		self.line = line
