@@ -8,7 +8,7 @@ The Objective is have one ZynkPy for a lot of languages.
 The Actual Objective is:
 
 - [ ] AST
-- [ ] Lexer
+- [x] Lexer
 - [ ] Bytecode
 - [ ] Castellano (Spanish)
 - [ ] English
