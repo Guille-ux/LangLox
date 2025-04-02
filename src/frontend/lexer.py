@@ -254,10 +254,10 @@ class ZynkLexer:
 		while not self.is_at_end():
 			char = self.advance()
 			if consumed == True:
-				if not self.peek().char.isdigit():
+				if not self.peek().isdigit():
 					break #we have readed the complet number
 			elif consumed == False:
-				if char == "." and consumed==False:
+				if char == ".":
 					consumed = True
 				elif self.peek().isdigit():
 					pass
