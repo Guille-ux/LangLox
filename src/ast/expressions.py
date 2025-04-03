@@ -57,18 +57,32 @@ class ZynkEval(Visitor):
 	def visit_binary(self, expr):
 		left = expr.left.accept(self)
 		right = expr.right.accept(self)
-		
+		try:
 		#lógica
-		if expr.operator == "+":
-			return left + right
-		elif expr.operator == "-":
-			return left - right
-		elif expr.operator == "*":
-			return left * right
-		elif expr.operator == "/":
-			return left / right
-		else:
-			raise ValueError(f"¡Operator : {expr.operator} isn't recognized!")
+			if expr.operator == "+":
+				return left + right
+			elif expr.operator == "<":
+				return left < right
+			elif expr.operator == "==":
+				return left == right
+			elif expr.operator == "!=":
+				return left != right
+			elif expr.operator == "<=":
+				return left <= right
+			elif expr.operator == ">":
+				return left > right
+			elif expr.operator == ">=":
+				return left >= right
+			elif expr.operator == "-":
+				return left - right
+			elif expr.operator == "*":
+				return left * right
+			elif expr.operator == "/":
+				return left / right
+			else:
+				raise ValueError(f"¡Operator : {expr.operator} isn't recognized!")
+		except Exception as e:
+			raise Exception("¡Invalid Calc : {expr.left} {expr.operator} {expr.right} !")
 	def visit_unary(self, expr):
 		sign = expr.right.accept(self)
 		
