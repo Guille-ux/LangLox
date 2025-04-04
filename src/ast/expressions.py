@@ -82,7 +82,7 @@ class ZynkEval(Visitor):
 			else:
 				raise ValueError(f"¡Operator : {expr.operator} isn't recognized!")
 		except Exception as e:
-			raise Exception("¡Invalid Calc : {expr.left} {expr.operator} {expr.right} !")
+			raise Exception(f"¡Invalid Calc : {expr.left} {expr.operator} {expr.right} !")
 	def visit_unary(self, expr):
 		sign = expr.right.accept(self)
 		
