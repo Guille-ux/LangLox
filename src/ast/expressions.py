@@ -58,9 +58,15 @@ class ZynkEval(Visitor):
 		left = expr.left.accept(self)
 		right = expr.right.accept(self)
 		try:
-		#lógica
+			#lógica
 			if expr.operator == "+":
 				return left + right
+			elif expr.operator == "and":
+				return left and right
+			elif expr.operator == "or":
+				return left or right
+			elif expr.operator == "^":
+				return left ^ right
 			elif expr.operator == "<":
 				return left < right
 			elif expr.operator == "==":
