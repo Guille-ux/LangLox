@@ -121,10 +121,10 @@ class ZynkLexer:
 			self.add_token(tokens.TokenType.THIS, "this")
 			return True
 		elif self.match_sequence("true"):
-			self.add_token(tokens.TokenType.TRUE, "true")
+			self.add_token(tokens.TokenType.TRUE, "true", True)
 			return True
 		elif self.match_sequence("false"):
-			self.add_token(tokens.TokenType.FALSE, "false")
+			self.add_token(tokens.TokenType.FALSE, "false", False)
 			return True
 		elif self.match_sequence("import"):
 			self.add_token(tokens.TokenType.IMPORT, "import")
@@ -213,7 +213,7 @@ class ZynkLexer:
 				self.add_token(tokens.TokenType.NOT_EQUAL, "!=")
 				return True
 			else:
-				self.add_tokens(tokens.TokenType.NOT, "!")
+				self.add_token(tokens.TokenType.NOT, "!")
 				return True
 		elif char == "=":
 			if self.match("="):
@@ -271,7 +271,7 @@ class ZynkLexer:
 	def get_actual(self):
 		return self.source[self.current-1]
 	def match_sequence(self, to_prove):
-		ret_point = self.current-1
+		ret_point = self.current
 		first = self.get_actual()
 		if first != to_prove[0]:
 			return False
