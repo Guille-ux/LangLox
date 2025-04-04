@@ -14,8 +14,8 @@
 # Copyright (c) 2025 Guillermo Leira Temes
 
 # Lexic Analyzer
-from . import errors
-from . import tokens
+from .. import errors
+from .. import tokens
 
 
 class ZynkLexer:
@@ -163,10 +163,10 @@ class ZynkLexer:
 		if char.isdigit():
 			result = self.num_lexer()
 			if result:
-				self.add_token(tokens.TokenType.FLOAT, self.source[self.start:self.current], self.source[self.start:self.current])
+				self.add_token(tokens.TokenType.FLOAT, self.source[self.start:self.current], float(self.source[self.start:self.current]))
 				return True
 			elif not result:
-				self.add_token(tokens.TokenType.INT, self.source[self.start:self.current], self.source[self.start:self.current])
+				self.add_token(tokens.TokenType.INT, self.source[self.start:self.current], int(self.source[self.start:self.current]))
 				return True
 	def scan_one(self, char): # scans one character symbols
 		if char == " " or char == "\t" or char == "\r":
@@ -240,6 +240,10 @@ class ZynkLexer:
 		self.current += 1
 		self.column += 1
 		return self.source[self.current-1]
+	def retro(self):
+		self.current -= 1
+		self.column -= 1
+		return self.source[self.current-1]
 	def match(self, expected):
 		if self.is_at_end() or self.source[self.current] != expected:
 			return False
@@ -264,7 +268,6 @@ class ZynkLexer:
 				else:
 					break
 		return consumed
-		self.advance()
 	def get_actual(self):
 		return self.source[self.current-1]
 	def match_sequence(self, to_prove):

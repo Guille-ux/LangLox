@@ -21,6 +21,8 @@ class Literal(Expr):
 		self.value = value
 	def accept(self, visitor):
 		return visitor.visit_literal(self)
+	def __repr__(self):
+		return f"{self.value}"
 class Binary(Expr):
 	def __init__(self, left, operator, right):
 		self.left = left
@@ -28,76 +30,21 @@ class Binary(Expr):
 		self.right = right
 	def accept(self, visitor):
 		return visitor.visit_binary(self)
+	def __repr__(self):
+		return f"[{self.left}] : [{self.operator}] : [{self.right}]"
 class Unary(Expr):
 	def __init__(self, operator, right):
 		self.operator = operator
 		self.right = right
 	def accept(self, visitor):
 		return visitor.visit_unary(self)
+	def __repr__(self):
+		return f"[{self.operator}] : [{self.right}]"
 	
 class Grouping(Expr):
 	def __init__(self, expr):
 		self.expr = expr
 	def accept(self, visitor):
 		return visitor.visit_grouping(self)
-	
-class Visitor:
-	def visit_literal(self, expr):
-		raise NotImplementedError()
-	def visit_binary(self, expr):
-		raise NotImplementedError()
-	def visit_unary(self, expr):
-		raise NotImplementedError()
-	def visit_grouping(self, expr):
-		raise NotImplementedError()
-
-class ZynkEval(Visitor):
-	def visit_literal(self, expr):
-		return expr.value
-	def visit_binary(self, expr):
-		left = expr.left.accept(self)
-		right = expr.right.accept(self)
-		try:
-			#lógica
-			if expr.operator == "+":
-				return left + right
-			elif expr.operator == "and":
-				return left and right
-			elif expr.operator == "or":
-				return left or right
-			elif expr.operator == "^":
-				return left ^ right
-			elif expr.operator == "<":
-				return left < right
-			elif expr.operator == "==":
-				return left == right
-			elif expr.operator == "!=":
-				return left != right
-			elif expr.operator == "<=":
-				return left <= right
-			elif expr.operator == ">":
-				return left > right
-			elif expr.operator == ">=":
-				return left >= right
-			elif expr.operator == "-":
-				return left - right
-			elif expr.operator == "*":
-				return left * right
-			elif expr.operator == "/":
-				return left / right
-			else:
-				raise ValueError(f"¡Operator : {expr.operator} isn't recognized!")
-		except Exception as e:
-			raise Exception(f"¡Invalid Calc : {expr.left} {expr.operator} {expr.right} !")
-	def visit_unary(self, expr):
-		sign = expr.right.accept(self)
-		
-		#logic
-		if expr.operator == "-":
-			return -sign
-		elif expr.operator == "!":
-			return not sign
-		else:
-			raise ValueError(f"¡Operator : {expr.operator} isn't recognized!")
-	def visit_grouping(self, expr):
-		return expr.expr.accept(self)
+	def __repr__(self):
+		return f"[{self.expr}]"
