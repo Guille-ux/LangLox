@@ -16,6 +16,7 @@
 #Visitor pattern (it is very helpful)
 
 from . import expressions as zexpr
+from . import sentences as zsent
 
 class Visitor:
 	def visit_literal(self, expr):
@@ -26,6 +27,12 @@ class Visitor:
 		raise NotImplementedError()
 	def visit_grouping(self, expr):
 		raise NotImplementedError()
+	def visit_print_stmt(self, stmt):
+		raise NotImplementedError
+	def visit_expression_stmt(self, stmt):
+		raise NotImplementedError
+	def visit(self, expr):
+		raise NotImplementedError
 
 class ZynkEval(Visitor):
 	def visit(self, expr):
@@ -37,6 +44,10 @@ class ZynkEval(Visitor):
 			return self.visit_unary(expr)
 		elif isinstance(expr, zexpr.Grouping):
 			return self.visit_grouping(expr)
+		elif isinstance(expr, zsent.PrintStmt):
+			return self.visit_print_stmt(expr)
+		elif isinstance(expr, zsent.ExprStmt):
+			return self.visit_expression_stmt(expr)
 		else:
 			raise ValueError(f"¡Unknow Expression type : {type(expr)}")
 	def visit_literal(self, expr):
@@ -88,3 +99,10 @@ class ZynkEval(Visitor):
 			raise ValueError(f"¡Operator : {expr.operator} isn't recognized!")
 	def visit_grouping(self, expr):
 		return expr.expr.accept(self)
+	def visit_print_stmt(self, stmt):
+		value = self.evaluate(expr.expression)
+		print(value)
+	def evaluate(self, expr):
+		return expr.accept(self)
+	def visit_expression_stmt(self, stmt):
+		return self.evaluate(stmt.expression)

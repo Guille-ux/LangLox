@@ -16,6 +16,7 @@
 from .. import tokens
 from .. import errors
 from . import expressions as zexpr
+from . import sentences as zsent
 
 class AlgebraicParser:
 	def __init__(self, tokens):
