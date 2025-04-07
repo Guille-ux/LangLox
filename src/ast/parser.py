@@ -28,6 +28,8 @@ class AlgebraicParser:
 	def expr(self):
 		term1 = self.term()
 		while self.match(tokens.TokenType.PLUS) or self.match(tokens.TokenType.MINUS):
+			if self.peek().type == tokens.TokenType.SEMICOLON:
+				return term1
 			op = self.prev().lexem
 			term2 = self.term()
 			term1 = zexpr.Binary(term1, op, term2)
@@ -35,6 +37,8 @@ class AlgebraicParser:
 	def term(self):
 		factor1 = self.factor()
 		while self.match(tokens.TokenType.MULTIPLY) or self.match(tokens.TokenType.DIVIDE):
+			if self.peek().type == tokens.TokenType.SEMICOLON:
+				return factor1
 			op = self.prev().lexem
 			factor2 = self.factor()
 			factor1 = zexpr.Binary(factor1, op, factor2)
@@ -71,12 +75,14 @@ class ZynkParser:
 	def __init__(self, tokens):
 		self.tokens = tokens
 		self.pos = 0
+		self.token_begin = 0
 	def parse(self):
 		statements = []
 		while not self.is_at_end():
 			statements.append(self.statement())
 		return statements
 	def statement(self):
+		self.token_begin = self.pos
 		if self.match(tokens.TokenType.RETURN):
 			expression = self.expression()
 			self.match_or_error(tokens.TokenType.SEMICOLON)
@@ -216,7 +222,7 @@ class ZynkParser:
 	def expression(self):
 		return self.algebraic()
 	def algebraic(self):
-		return AlgebraicParser(self.tokens).parse()
+		return AlgebraicParser(self.token_begin).parse()
 	def is_at_end(self):
 		return self.pos >= len(self.tokens)
 	def match(self, expected_type):
