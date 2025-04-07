@@ -144,8 +144,12 @@ class ZynkLexer:
 		elif self.match_sequence("else"):
 			self.add_token(tokens.TokenType.ELSE, "else")
 			return True
-		# faltan for, while, super y nada más
-		#añadiendolos ahora
+		elif self.match_sequence("extends"):
+			self.add_token(tokens.TokenType.EXTENDS, "extends")
+			return True
+		elif self.match_sequence("input"):
+			self.add_token(tokens.TokenType.INPUT, "input")
+			return True
 		elif self.match_sequence("for"):
 			self.add_token(tokens.TokenType.FOR, "for")
 			return True

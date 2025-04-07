@@ -66,3 +66,49 @@ class ForStmt(Stmt): # For statement
         self.body = body
     def accept(self, visitor):
         return visitor.visit_for_stmt(self)
+class CallStmt(Stmt): # Call statement
+    def __init__(self, callee, arguments):
+        self.callee = callee
+        self.arguments = arguments
+    def accept(self, visitor):
+        return visitor.visit_call_stmt(self)
+class NewStmt(Stmt): # New statement
+    def __init__(self, class_name, arguments):
+        self.class_name = class_name
+        self.arguments = arguments
+    def accept(self, visitor):
+        return visitor.visit_new_stmt(self)
+class ReturnStmt(Stmt): # Return statement
+    def __init__(self, value):
+        self.value = value
+    def accept(self, visitor):
+        return visitor.visit_return_stmt(self)
+class ClassStmt(Stmt): # Class statement
+    def __init__(self, name, superclass, methods):
+        self.name = name
+        self.superclass = superclass
+        self.methods = methods
+    def accept(self, visitor):
+        return visitor.visit_class_stmt(self)
+class ImportStmt(Stmt): # Import statement
+    def __init__(self, module_name):
+        self.module_name = module_name
+    def accept(self, visitor):
+        return visitor.visit_import_stmt(self)
+class FunctionStmt(Stmt): # Function statement
+    def __init__(self, name, params, body):
+        self.name = name
+        self.params = params
+        self.body = body
+    def accept(self, visitor):
+        return visitor.visit_function_stmt(self)
+class ThisStmt(Stmt): # This statement
+    def __init__(self, name):
+        self.name = name
+    def accept(self, visitor):
+        return visitor.visit_this_stmt(self)
+class SuperStmt(Stmt): # Super statement
+    def __init__(self, name):
+        self.name = name
+    def accept(self, visitor):
+        return visitor.visit_super_stmt(self)

@@ -41,7 +41,8 @@ class TokenType(Enum):
 	WHILE = "WHILE"
 	CALL = "CALL"
 	NEW = "NEW"
-	
+	EXTENDS = "EXTENDS"
+
 	#operands
 	PLUS = "+"
 	MINUS = "-"
@@ -75,6 +76,7 @@ class TokenType(Enum):
 	#built-in
 	PRINT = "PRINT"
 	IMPORT = "IMPORT"
+	INPUT = "INPUT"
 	
 class Token:
 	def __init__(self, tipo, lexem, valor, line, column):

@@ -150,3 +150,25 @@ class ZynkEval(Visitor):
 			self.evaluate(stmt.body)
 			self.evaluate(stmt.change)
 		return None
+	def visit_call_stmt(self, stmt):
+		callee = self.evaluate(stmt.callee)
+		args = [self.evaluate(arg) for arg in stmt.arguments]
+		return callee(*args)
+	def visit_new_stmt(self, stmt):
+		class_name = self.evaluate(stmt.class_name)
+		args = [self.evaluate(arg) for arg in stmt.arguments]
+		return class_name(*args)
+	def visit_import_stmt(self, stmt):
+		module_name = self.evaluate(stmt.module_name)
+		return module_name
+	def visit_this_stmt(self, stmt):
+		return self.evaluate(stmt.this)
+	def visit_func_stmt(self, stmt):
+		func_name = stmt.func_name
+		params = stmt.params
+		body = stmt.body
+		return func_name, params, body
+	def visit_return_stmt(self, stmt):
+		if stmt.value:
+			return self.evaluate(stmt.value)
+		return None
