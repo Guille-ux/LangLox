@@ -12,3 +12,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 # 
 # Copyright (c) 2025 Guillermo Leira Temes
+
+from . import eval
+from . import parser
+from . import sentences
+from . import expressions as expr

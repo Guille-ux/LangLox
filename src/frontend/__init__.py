@@ -13,4 +13,4 @@
 # 
 # Copyright (c) 2025 Guillermo Leira Temes
 
-
+from . import lexer

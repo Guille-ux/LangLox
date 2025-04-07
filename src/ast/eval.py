@@ -33,6 +33,16 @@ class Visitor:
 		raise NotImplementedError
 	def visit(self, expr):
 		raise NotImplementedError
+	def visit_var_stmt(self, stmt):
+		raise NotImplementedError
+	def visit_block_stmt(self, stmt):
+		raise NotImplementedError
+	def visit_if_stmt(self, stmt):
+		raise NotImplementedError
+	def visit_while_stmt(self, stmt):
+		raise NotImplementedError
+	def visit_for_stmt(self, stmt):
+		raise NotImplementedError
 
 class ZynkEval(Visitor):
 	def visit(self, expr):
@@ -48,6 +58,16 @@ class ZynkEval(Visitor):
 			return self.visit_print_stmt(expr)
 		elif isinstance(expr, zsent.ExprStmt):
 			return self.visit_expression_stmt(expr)
+		elif isinstance(expr, zsent.VarStmt):
+			return self.visit_var_stmt(expr)
+		elif isinstance(expr, zsent.BlockStmt):
+			return self.visit_block_stmt(expr)
+		elif isinstance(expr, zsent.IfStmt):
+			return self.visit_if_stmt(expr)
+		elif isinstance(expr.zsent.WhileStmt):
+			return self.visit_while_stmt(expr)
+		elif isinstance(expr, zsent.ForStmt):
+			return self.visit_for_stmt(expr)
 		else:
 			raise ValueError(f"¡Unknow Expression type : {type(expr)}")
 	def visit_literal(self, expr):
@@ -100,9 +120,33 @@ class ZynkEval(Visitor):
 	def visit_grouping(self, expr):
 		return expr.expr.accept(self)
 	def visit_print_stmt(self, stmt):
-		value = self.evaluate(expr.expression)
+		value = self.evaluate(stmt.expression)
 		print(value)
 	def evaluate(self, expr):
 		return expr.accept(self)
 	def visit_expression_stmt(self, stmt):
 		return self.evaluate(stmt.expression)
+	def visit_var_stmt(self, stmt):
+		value = self.evaluate(stmt.initializer)
+		print(f"Variable {stmt.name} initialized with {value}")
+		return value
+	def visit_block_stmt(self, stmt):
+		for statement in stmt.statements:
+			self.evaluate(statement)
+		return None
+	def visit_if_stmt(self, stmt):
+		if self.evaluate(stmt.condition):
+			return self.evaluate(stmt.then_branch)
+		elif stmt.else_branch:
+			return self.evaluate(stmt.else_branch)
+		return None
+	def visit_while_stmt(self, stmt):
+		while self.evaluate(stmt.condition):
+			self.evaluate(stmt.body)
+		return None
+	def visit_for_stmt(self, stmt):
+		self.evaluate(stmt.init)
+		while self.evaluate(stmt.condition):
+			self.evaluate(stmt.body)
+			self.evaluate(stmt.change)
+		return None

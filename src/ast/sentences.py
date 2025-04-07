@@ -24,13 +24,45 @@ class Stmt: # Statements
     def accept(self, visitor):
         raise NotImplementedError
 
-class PrintStmt(Stmt):
+class PrintStmt(Stmt): # Print statement
     def __init__(self, expression):
         self.expression = expression
     def accept(self, visitor):
         return visitor.visit_print_stmt(self)
-class ExprStmt(Sntc):
+class ExprStmt(Sntc): # Expression statement
     def __init__(self, expression):
         self.expression = expression
     def accept(self, visitor):
         return visitor.visit_expression_stmt(self)
+class VarStmt(Stmt):
+    def __init__(self, name, initializer): # name is the variable name, initializer is the value
+        self.name = name
+        self.initializer = initializer
+    def accept(self, visitor):
+        return visitor.visit_var_stmt(self)
+class BlockStmt(Stmt): # Block statement
+    def __init__(self, statements):
+        self.statements = statements
+    def accept(self, visitor):
+        return visitor.visit_block_stmt(self)
+class IfStmt(Stmt): # If statement
+    def __init__(self, condition, then_branch, else_branch=None):
+        self.condition = condition
+        self.then_branch = then_branch
+        self.else_branch = else_branch
+    def accept(self, visitor): 
+        return visitor.visit_if_stmt(self)
+class WhileStmt(Stmt): # While statement
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+    def accept(self, visitor):
+        return visitor.visit_while_stmt(self)
+class ForStmt(Stmt): # For statement
+    def __init__(self, init, condition, change, body):
+        self.init = init
+        self.condition = condition
+        self.change = change
+        self.body = body
+    def accept(self, visitor):
+        return visitor.visit_for_stmt(self)
