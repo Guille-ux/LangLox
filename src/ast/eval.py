@@ -17,6 +17,7 @@
 
 from . import expressions as zexpr
 from . import sentences as zsent
+from . import memory as zmem
 
 class Visitor:
 	def visit_literal(self, expr):
@@ -45,6 +46,8 @@ class Visitor:
 		raise NotImplementedError
 
 class ZynkEval(Visitor):
+	def __init__(self):
+		self.memory = zmem.SymbolTable()
 	def visit(self, expr):
 		if isinstance(expr, zexpr.Literal):
 			return self.visit_literal(expr)
@@ -64,10 +67,12 @@ class ZynkEval(Visitor):
 			return self.visit_block_stmt(expr)
 		elif isinstance(expr, zsent.IfStmt):
 			return self.visit_if_stmt(expr)
-		elif isinstance(expr.zsent.WhileStmt):
+		elif isinstance(expr, zsent.WhileStmt):
 			return self.visit_while_stmt(expr)
 		elif isinstance(expr, zsent.ForStmt):
 			return self.visit_for_stmt(expr)
+		elif isinstance(expr, zsent.VarExpr):
+			return self.visit_var_expr(expr)
 		else:
 			raise ValueError(f"¡Unknow Expression type : {type(expr)}")
 	def visit_literal(self, expr):
@@ -129,6 +134,7 @@ class ZynkEval(Visitor):
 	def visit_var_stmt(self, stmt):
 		value = self.evaluate(stmt.initializer)
 		print(f"Variable {stmt.name} initialized with {value}")
+		self.memory.add(stmt.name, value)
 		return value
 	def visit_block_stmt(self, stmt):
 		for statement in stmt.statements:
@@ -172,3 +178,8 @@ class ZynkEval(Visitor):
 		if stmt.value:
 			return self.evaluate(stmt.value)
 		return None
+	def visit_var_expr(self, expr):
+		value = self.memory.get(expr.name)
+		if value is None:
+			raise ValueError(f"¡Variable {expr.name} not defined!")
+		return value

@@ -17,6 +17,7 @@ from .. import tokens
 from .. import errors
 from . import expressions as zexpr
 from . import sentences as zsent
+from . import memory as zmem
 
 class AlgebraicParser:
 	def __init__(self, tokens):
@@ -65,7 +66,7 @@ class AlgebraicParser:
 	def match_or_error(self, expected):
 		if not self.match(expected):
 			raise SyntaxError(f"Expected Token {expected}, but found {self.peek().type}")
-
+		return self.prev()
 class ZynkParser:
 	def __init__(self, tokens):
 		self.tokens = tokens
@@ -143,10 +144,8 @@ class ZynkParser:
 				expression = self.expression()
 				self.match_or_error(tokens.TokenType.SEMICOLON)
 				return zsent.VarStmt(name, expression)
-			elif self.match(tokens.TokenType.SEMICOLON):
-				return zsent.ExpressionStmt(name)
 			else:
-				self.error(f"Unexpected token: {self.peek().type}")
+				return zsent.VarExpr(name)
 		elif self.match(tokens.TokenType.SEMICOLON):
 			return None
 		else:
@@ -158,7 +157,23 @@ class ZynkParser:
 	def var_stmt(self):
 		name = self.match_or_error(tokens.TokenType.IDENTIFIER)
 		if self.match(tokens.TokenType.ASSIGN):
-			expression = self.expression()
+			if self.match(tokens.TokenType.STRING):
+				expression = zexpr.Literal(self.prev().value)
+			elif self.match(tokens.TokenType.INT):
+				expression = zexpr.Literal(self.prev().value)
+			elif self.match(tokens.TokenType.FLOAT):
+				expression = zexpr.Literal(self.prev().value)
+			elif self.match(tokens.TokenType.IDENTIFIER):
+				expression = zexpr.Literal(self.prev().value)
+			elif self.match(tokens.TokenType.TRUE):
+				expression = zexpr.Literal(True)
+			elif self.match(tokens.TokenType.FALSE):
+				expression = zexpr.Literal(False)
+			elif self.match(tokens.TokenType.NULL):
+				expression = zexpr.Literal(None)
+			elif self.match(tokens.TokenType.LPAREN):
+				expression = self.expression()
+				self.match_or_error(tokens.TokenType.RPAREN)
 		else:
 			expression = None
 		self.match_or_error(tokens.TokenType.SEMICOLON)

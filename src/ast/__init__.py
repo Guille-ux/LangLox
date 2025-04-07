@@ -17,3 +17,4 @@ from . import eval
 from . import parser
 from . import sentences
 from . import expressions as expr
+from . import memory as mem
