@@ -3,5 +3,5 @@ The official documentation of ZynkPy
 
 ## Built-in
 ### functions
-    - print
-    - input
+- **print**
+- **input**
