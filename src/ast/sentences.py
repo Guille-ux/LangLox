@@ -112,3 +112,8 @@ class SuperStmt(Stmt): # Super statement
         self.name = name
     def accept(self, visitor):
         return visitor.visit_super_stmt(self)
+class VarExpr(Sntc):
+    def __init__(self, name):
+        self.name = name
+    def accept(self, visitor):
+        return visitor.visit_var_expr(self)
