@@ -46,8 +46,8 @@ class Visitor:
 		raise NotImplementedError
 
 class ZynkEval(Visitor):
-	def __init__(self):
-		self.memory = zmem.SymbolTable()
+	def __init__(self, enclosing=None):
+		self.memory = zmem.SymbolTable(enclosing)
 	def visit(self, expr):
 		if isinstance(expr, zexpr.Literal):
 			return self.visit_literal(expr)
@@ -157,8 +157,9 @@ class ZynkEval(Visitor):
 			self.evaluate(stmt.change)
 		return None
 	def visit_call_stmt(self, stmt):
-		callee = self.evaluate(stmt.callee)
-		args = [self.evaluate(arg) for arg in stmt.arguments]
+		next = ZynkEval(enclosing=self.memory)
+		callee = next.evaluate(stmt.callee)
+		args = [next.evaluate(arg) for arg in stmt.arguments]
 		return callee(*args)
 	def visit_new_stmt(self, stmt):
 		class_name = self.evaluate(stmt.class_name)
