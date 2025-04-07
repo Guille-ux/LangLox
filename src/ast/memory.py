@@ -7,7 +7,11 @@ class SymbolTable:
         self.symbols[name] = value
 
     def get(self, name):
-        return self.symbols.get(name)
+        if name in self.symbols:
+            return self.symbols[name]
+        if self.enclosing:
+            return self.enclosing.get(name)
+        raise ValueError(f"Variable '{name}' not defined.")
 
     def remove(self, name):
         if name in self.symbols:
