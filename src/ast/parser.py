@@ -83,6 +83,10 @@ class ZynkParser:
 		pass
 	def algebraic(self):
 		return AlgebraicParser(self.tokens[self.token_begin:self.pos]).parse()
+	def advance(self):
+		if not self.is_at_end():
+			self.pos += 1
+		return self.peek()
 	def is_at_end(self):
 		return self.pos >= len(self.tokens)
 	def match(self, expected_type):
