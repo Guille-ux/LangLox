@@ -56,6 +56,9 @@ class AlgebraicParser:
 			expr = self.expr()
 			self.match_or_error(tokens.TokenType.RPAREN)
 			return expr
+		elif self.match(tokens.TokenType.IDENTIFIER):
+			expr = zsent.VarExpr()
+			return expr
 		raise SyntaxError(f"Unexpected Token: {self.peek().type}")
 	def peek(self):
 		if self.pos < len(self.tokens):
@@ -90,7 +93,7 @@ class ZynkParser:
 		elif self.match(tokens.TokenType.IMPORT):
 			name = self.match_or_error(tokens.TokenType.IDENTIFIER)
 			self.match_or_error(tokens.TokenType.SEMICOLON)
-			return zsent.ImportStmt(name)
+			return zsent.ImportStmt(name.lexem)
 		elif self.match(tokens.TokenType.CALL):
 			callee = self.expression()
 			self.match_or_error(tokens.TokenType.SEMICOLON)
@@ -102,7 +105,7 @@ class ZynkParser:
 			while not self.is_at_end() and not self.check(tokens.TokenType.RPAREN):
 				arguments.append(self.expression())
 			self.match_or_error(tokens.TokenType.RPAREN)
-			return zsent.NewStmt(class_name, arguments)
+			return zsent.NewStmt(class_name.lexem, arguments)
 		elif self.match(tokens.TokenType.FUNC):
 			func_name = self.match_or_error(tokens.TokenType.IDENTIFIER)
 			self.match_or_error(tokens.TokenType.LPAREN)
@@ -117,7 +120,7 @@ class ZynkParser:
 			while not self.is_at_end() and not self.check(tokens.TokenType.RBRACE):
 				body.append(self.statement())
 			self.match_or_error(tokens.TokenType.RBRACE)
-			return zsent.FunctionStmt(func_name, params, body)
+			return zsent.FunctionStmt(func_name.lexem, params, body)
 		elif self.match(tokens.TokenType.CLASS):
 			name = self.match_or_error(tokens.TokenType.IDENTIFIER)
 			superclass = None
@@ -128,7 +131,7 @@ class ZynkParser:
 			while not self.is_at_end() and not self.check(tokens.TokenType.RBRACE):
 				methods.append(self.statement())
 			self.match_or_error(tokens.TokenType.RBRACE)
-			return zsent.ClassStmt(name, superclass, methods)
+			return zsent.ClassStmt(name.lexem, superclass, methods)
 		elif self.match(tokens.TokenType.PRINT):
 			return self.print_stmt()
 		elif self.match(tokens.TokenType.VAR):
@@ -149,9 +152,9 @@ class ZynkParser:
 			if self.match(tokens.TokenType.ASSIGN):
 				expression = self.expression()
 				self.match_or_error(tokens.TokenType.SEMICOLON)
-				return zsent.VarStmt(name, expression)
+				return zsent.VarStmt(name.lexem, expression)
 			else:
-				return zsent.VarExpr(name)
+				return zsent.VarExpr(name.lexem)
 		elif self.match(tokens.TokenType.SEMICOLON):
 			return None
 		else:
@@ -161,7 +164,7 @@ class ZynkParser:
 		self.match_or_error(tokens.TokenType.SEMICOLON)
 		return zsent.PrintStmt(expression)
 	def var_stmt(self):
-		name = self.match_or_error(tokens.TokenType.IDENTIFIER)
+		tokenVar = self.match_or_error(tokens.TokenType.IDENTIFIER)
 		if self.match(tokens.TokenType.ASSIGN):
 			if self.match(tokens.TokenType.STRING):
 				expression = zexpr.Literal(self.prev().value)
@@ -183,7 +186,7 @@ class ZynkParser:
 		else:
 			expression = None
 		self.match_or_error(tokens.TokenType.SEMICOLON)
-		return zsent.VarStmt(name, expression)
+		return zsent.VarStmt(tokenVar.lexem, expression)
 	def if_stmt(self):
 		self.match_or_error(tokens.TokenType.LPAREN)
 		condition = self.expression()
