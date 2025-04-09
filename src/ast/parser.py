@@ -57,8 +57,14 @@ class AlgebraicParser:
 			self.match_or_error(tokens.TokenType.RPAREN)
 			return expr
 		elif self.match(tokens.TokenType.IDENTIFIER):
-			expr = zsent.VarExpr()
+			expr = zsent.VarExpr(self.prev().lexem)
 			return expr
+		elif self.match(tokens.TokenType.STRING):
+			return zexpr.Literal(self.prev().value)
+		elif self.match(tokens.TokenType.BOOLEAN):
+			return zexpr.Literal(self.prev().value)
+		elif self.match(tokens.TokenType.NULL):
+			return zexpr.Literal(self.prev().value)
 		raise SyntaxError(f"Unexpected Token: {self.peek().type}")
 	def peek(self):
 		if self.pos < len(self.tokens):
@@ -81,8 +87,21 @@ class ZynkParser:
 		self.token_begin = 0
 	def parse(self):
 		pass
-	def algebraic(self):
-		return AlgebraicParser(self.tokens[self.token_begin:self.pos]).parse()
+	def parse_expr(self):
+		self.token_begin = self.pos
+		if self.match(tokens.TokenType.PRINT):
+			# funcionalidad para imprimir
+			arguments = []
+			while not self.is_at_end():
+				self.advance()
+				if self.check(tokens.TokenType.SEMICOLON):
+					break
+				arguments.append(self.prev())
+			parsed = self.algebraic(arguments)
+			return zsent.PrintStmt(parsed)
+
+	def algebraic(self, tokens):
+		return AlgebraicParser(tokens).parse()
 	def advance(self):
 		if not self.is_at_end():
 			self.pos += 1

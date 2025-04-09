@@ -127,6 +127,7 @@ class ZynkEval(Visitor):
 	def visit_print_stmt(self, stmt):
 		value = self.evaluate(stmt.expression)
 		print(value)
+		return value
 	def evaluate(self, expr):
 		return expr.accept(self)
 	def visit_expression_stmt(self, stmt):

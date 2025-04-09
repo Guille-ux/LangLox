@@ -16,9 +16,6 @@
 
 # Visitor Pattern is very useful
 
-class Sntc: # sentence class
-    def accept(self, visitor):
-        raise NotImplementedError
 
 class Stmt: # Statements
     def accept(self, visitor):
@@ -29,7 +26,7 @@ class PrintStmt(Stmt): # Print statement
         self.expression = expression
     def accept(self, visitor):
         return visitor.visit_print_stmt(self)
-class ExprStmt(Sntc): # Expression statement
+class ExprStmt(Stmt): # Expression statement
     def __init__(self, expression):
         self.expression = expression
     def accept(self, visitor):
@@ -112,7 +109,7 @@ class SuperStmt(Stmt): # Super statement
         self.name = name
     def accept(self, visitor):
         return visitor.visit_super_stmt(self)
-class VarExpr(Sntc):
+class VarExpr(Stmt):
     def __init__(self, name):
         self.name = name
     def accept(self, visitor):
