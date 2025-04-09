@@ -1,7 +1,7 @@
 from test import print_test
 import sys
 
-def test():
+def test(test_cases):
     for test_case in test_cases:
         try:
             lexer = ZynkLexer(test_case)
