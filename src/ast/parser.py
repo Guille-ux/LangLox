@@ -89,8 +89,7 @@ class ZynkParser:
 		pass
 	def parse_expr(self):
 		self.token_begin = self.pos
-		if self.match(tokens.TokenType.PRINT):
-			# funcionalidad para imprimir
+		if self.match(tokens.TokenType.PRINT): # funcionalidad para imprimir
 			arguments = []
 			while not self.is_at_end():
 				self.advance()
@@ -99,7 +98,8 @@ class ZynkParser:
 				arguments.append(self.prev())
 			parsed = self.algebraic(arguments)
 			return zsent.PrintStmt(parsed)
-
+		else:
+			raise SyntaxError(f"Expected Token PRINT, but found {self.peek().type}")
 	def algebraic(self, tokens):
 		return AlgebraicParser(tokens).parse()
 	def advance(self):
