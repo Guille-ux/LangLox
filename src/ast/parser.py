@@ -95,7 +95,23 @@ class ZynkParser:
 			self.match_or_error(tokens.TokenType.SEMICOLON)
 			return zsent.ImportStmt(name.lexem)
 		elif self.match(tokens.TokenType.CALL):
-			callee = self.expression()
+			callee = self.tokens[self.pos]
+			self.pos += 1
+			self.match_or_error(tokens.TokenType.LPAREN)
+			arguments = []
+			while not self.is_at_end() and not self.check(tokens.TokenType.RPAREN):
+				try:
+					arguments.append(self.match_or_error(tokens.TokenType.IDENTIFIER))
+				except SyntaxError:
+					try:
+						arguments.append(self.match_or_error(tokens.TokenType.STRING))
+					except SyntaxError:
+						self.expression()
+				if self.match(tokens.TokenType.COMMA):
+					continue
+				else:
+					break
+			self.match_or_error(tokens.TokenType.RPAREN)
 			self.match_or_error(tokens.TokenType.SEMICOLON)
 			return zsent.CallStmt(callee)
 		elif self.match(tokens.TokenType.NEW):
@@ -103,7 +119,17 @@ class ZynkParser:
 			self.match_or_error(tokens.TokenType.LPAREN)
 			arguments = []
 			while not self.is_at_end() and not self.check(tokens.TokenType.RPAREN):
-				arguments.append(self.expression())
+				try:
+					arguments.append(self.match_or_error(tokens.TokenType.IDENTIFIER))
+				except SyntaxError:
+					try:
+						arguments.append(self.match_or_error(tokens.TokenType.STRING))
+					except SyntaxError:
+						self.expression()
+				if self.match(tokens.TokenType.COMMA):
+					continue
+				else:
+					break
 			self.match_or_error(tokens.TokenType.RPAREN)
 			return zsent.NewStmt(class_name.lexem, arguments)
 		elif self.match(tokens.TokenType.FUNC):
@@ -225,7 +251,7 @@ class ZynkParser:
 	def expression(self):
 		return self.algebraic()
 	def algebraic(self):
-		return AlgebraicParser(self.token_begin).parse()
+		return AlgebraicParser(self.tokens[self.token_begin:self.pos]).parse()
 	def is_at_end(self):
 		return self.pos >= len(self.tokens)
 	def match(self, expected_type):
@@ -275,23 +301,3 @@ class ZynkParser:
 		return self.peek().value
 	def get_lexem(self):
 		return self.peek().lexem
-	def get_included(self):
-		return self.peek().included
-	def get_included_tokens(self):
-		return self.peek().included
-	def get_included_lexems(self):
-		return [token.lexem for token in self.peek().included]
-	def get_included_values(self):
-		return [token.value for token in self.peek().included]
-	def get_included_types(self):
-		return [token.type for token in self.peek().included]
-	def get_included_lines(self):
-		return [token.line for token in self.peek().included]
-	def get_included_columns(self):
-		return [token.column for token in self.peek().included]
-	def get_included_pos(self):
-		return [token.pos for token in self.peek().included]
-	def get_included_pos(self):
-		return [token.pos for token in self.peek().included]
-	def get_included_pos(self):
-		return [token.pos for token in self.peek().included]

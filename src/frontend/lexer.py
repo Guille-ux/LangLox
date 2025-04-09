@@ -66,7 +66,8 @@ class ZynkLexer:
 	def is_comment(self):
 		if self.source[self.current-1]=="#":
 			self.skip_comment()
-		return True
+			return True
+		return False
 	def skip_comment(self):
 		while not self.is_at_end():
 			char = self.peek()
