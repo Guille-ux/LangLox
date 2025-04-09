@@ -72,6 +72,7 @@ class TokenType(Enum):
 	#Otros tipos
 	EOF = "EOF"
 	DOT = "."
+	SECURITY = "SECURITY"
 
 	#built-in
 	PRINT = "PRINT"

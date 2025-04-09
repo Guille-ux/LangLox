@@ -61,7 +61,9 @@ class AlgebraicParser:
 			return expr
 		elif self.match(tokens.TokenType.STRING):
 			return zexpr.Literal(self.prev().value)
-		elif self.match(tokens.TokenType.BOOLEAN):
+		elif self.match(tokens.TokenType.TRUE):
+			return zexpr.Literal(self.prev().value)
+		elif self.match(tokens.TokenType.FALSE):
 			return zexpr.Literal(self.prev().value)
 		elif self.match(tokens.TokenType.NULL):
 			return zexpr.Literal(self.prev().value)
@@ -86,20 +88,33 @@ class ZynkParser:
 		self.pos = 0
 		self.token_begin = 0
 	def parse(self):
-		pass
+		exprs = []
+		while not self.is_at_end():
+			stmt = self.parse_expr()
+			self.advance()
+			if stmt is None:
+				continue
+			else:
+				exprs.append(stmt)
+		return exprs
 	def parse_expr(self):
 		self.token_begin = self.pos
-		if self.match(tokens.TokenType.PRINT): # funcionalidad para imprimir
+		if self.match(tokens.TokenType.SECURITY): # security token
+			return None
+		if self.check(tokens.TokenType.PRINT): # funcionalidad para imprimir
 			arguments = []
 			while not self.is_at_end():
-				self.advance()
-				if self.check(tokens.TokenType.SEMICOLON):
+				if self.match(tokens.TokenType.SEMICOLON):
 					break
-				arguments.append(self.prev())
+				elif self.match(tokens.TokenType.EOF): # importante para el caso de EOF
+					raise SyntaxError("Unexpected EOF")
+				arguments.append(self.advance())
+			if arguments and arguments[-1].type in (tokens.TokenType.SEMICOLON, tokens.TokenType.EOF):
+				arguments.pop()
 			parsed = self.algebraic(arguments)
 			return zsent.PrintStmt(parsed)
 		else:
-			raise SyntaxError(f"Expected Token PRINT, but found {self.peek().type}")
+			raise SyntaxError(f"Unexpected Token : {self.peek().type}")
 	def algebraic(self, tokens):
 		return AlgebraicParser(tokens).parse()
 	def advance(self):
@@ -120,14 +135,15 @@ class ZynkParser:
 			return False
 		return self.tokens[self.pos].type == expected_type
 	def prev(self):
-		return self.tokens[self.pos - 1]
+		if not self.is_at_end() and self.pos > 0:
+			return self.tokens[self.pos - 1]
 	def match_or_error(self, expected):
 		if not self.match(expected):
 			raise SyntaxError(f"Expected Token {expected}, but found {self.peek().type}")
 		return self.prev()
 	def peek(self):
 		if self.is_at_end():
-			return None
+			return tokens.Token(tokens.TokenType.SECURITY, "", None, -1, -1)
 		return self.tokens[self.pos]
 	def error(self, message):
 		line, column = self.peek().get_pos()
