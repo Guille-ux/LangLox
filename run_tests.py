@@ -23,3 +23,5 @@ def test(test_cases):
             print(f"Error: {e}")
             continue
 
+if sys.argv[1]:
+    pass
