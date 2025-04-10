@@ -7,7 +7,13 @@ The Objective is have one ZynkPy for a lot of languages.
 
 The Actual Objective is:
 
-- [ ] AST
+- AST
+    - [x] Print
+    - [x] Variables
+    - [ ] Functions
+    - [ ] Classes
+    - [ ] Input
+    - [ ] Import
 - [x] Lexer
 - [ ] Bytecode
 - [ ] Castellano (Spanish)
