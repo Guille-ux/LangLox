@@ -36,9 +36,16 @@ def test(test_cases):
                 evaluator.visit(todo)
             print("Evaluator Passed")
             print(f"Test case: {test_case}")
-            print(f"Parsed: {parsed}")
-            print(f"Tokens: {tokens}")
-            print("Test passed")
+            print("-----Tokens-----")
+            for token in tokens:
+                print(token)
+            print("-----Parsed-----")
+            print(parsed)
+            print("-----Evaluated-----")
+            for todo in parsed:
+                print(evaluator.visit(todo))
+            print("-----End-----")
+            print("Test case passed")
         except Exception as e:
             print(f"Error: {e}")
             continue

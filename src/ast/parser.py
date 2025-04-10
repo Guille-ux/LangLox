@@ -113,7 +113,7 @@ class ZynkParser:
 				arguments.pop()
 			parsed = self.algebraic(arguments)
 			return zsent.PrintStmt(parsed)
-		elif self.match(tokens.TokenType.VAR): # variable declaration
+		elif self.match(tokens.TokenType.VAR): # variable declaration, increiblemente funciona
 			name = self.prev().lexem
 			self.match_or_error(tokens.TokenType.IDENTIFIER)
 			self.check(tokens.TokenType.ASSIGN)
