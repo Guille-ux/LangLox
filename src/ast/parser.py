@@ -113,25 +113,23 @@ class ZynkParser:
 				arguments.pop()
 			parsed = self.algebraic(arguments)
 			return zsent.PrintStmt(parsed)
-		elif self.check(tokens.TokenType.VAR): # variable declaration
-			next = self.advance()
-			if next.type == tokens.TokenType.IDENTIFIER:
-				self.match_or_error(tokens.TokenType.EQUAL)
-				arguments = []
-				while not self.is_at_end():
-					if self.match(tokens.TokenType.SEMICOLON):
-						break
-					elif self.match(tokens.TokenType.EOF):
-						raise SyntaxError("Unexpected EOF")
-					arguments.append(self.advance())
-				if arguments and arguments[-1].type in (tokens.TokenType.SEMICOLON, tokens.TokenType.EOF):
-					arguments.pop()
-				parsed = self.algebraic(arguments)
-				if not parsed:
-					self.error("Expected expression after '='")
-				return zsent.VarStmt(next.lexem, parsed)
-			else:
-				self.error(f"Expected identifier, but found {next.type}")
+		elif self.match(tokens.TokenType.VAR): # variable declaration
+			name = self.prev().lexem
+			self.match_or_error(tokens.TokenType.IDENTIFIER)
+			self.check(tokens.TokenType.ASSIGN)
+			arguments = []
+			while not self.is_at_end():
+				if self.match(tokens.TokenType.SEMICOLON):
+					break
+				elif self.match(tokens.TokenType.EOF):
+					raise SyntaxError("Unexpected EOF")
+				arguments.append(self.advance())
+			if arguments and arguments[-1].type in (tokens.TokenType.SEMICOLON, tokens.TokenType.EOF):
+				arguments.pop()
+			parsed = self.algebraic(arguments)
+			if not parsed:
+				self.error("Expected expression after '='")
+			return zsent.VarStmt(name, parsed)
 		else:
 			raise SyntaxError(f"Unexpected Token : {self.peek().type}")
 	def algebraic(self, tokens):

@@ -18,6 +18,7 @@ from src.frontend.lexer import ZynkLexer
 from src.ast.parser import ZynkParser
 from src.errors import ZynkPyError
 from zynktest import tprint as print_test
+from zynktest import tvar as var_test
 import sys
 
 def test(test_cases):
@@ -44,6 +45,9 @@ def test(test_cases):
 
 if sys.argv[1] == "print":
     test_cases = print_test.test_cases
+    test(test_cases)
+elif sys.argv[1] == "var":
+    test_cases = var_test.test_cases
     test(test_cases)
 else:
     print("No test cases found")

@@ -13,9 +13,6 @@
 # 
 # Copyright (c) 2025 Guillermo Leira Temes
 
-from src.frontend.lexer import ZynkLexer
-from src.ast.parser import ZynkParser
-from src.ast.eval import ZynkEval
 
 test_cases = [
     "print 1 + 2 ;",
