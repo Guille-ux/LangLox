@@ -48,7 +48,7 @@ class AlgebraicParser:
 			op = self.prev().lexem
 			right = self.factor()
 			return zexpr.Unary(op, right)
-		if self.match(tokens.TokenType.INT):
+		elif self.match(tokens.TokenType.INT):
 			return zexpr.Literal(self.prev().value)
 		elif self.match(tokens.TokenType.FLOAT):
 			return zexpr.Literal(self.prev().value)
@@ -91,10 +91,7 @@ class ZynkParser:
 		exprs = []
 		while not self.is_at_end():
 			stmt = self.parse_expr()
-			self.advance()
-			if stmt is None:
-				continue
-			else:
+			if stmt is not None:
 				exprs.append(stmt)
 		return exprs
 	def parse_expr(self):
@@ -114,7 +111,7 @@ class ZynkParser:
 			parsed = self.algebraic(arguments)
 			return zsent.PrintStmt(parsed)
 		elif self.match(tokens.TokenType.VAR): # variable declaration, increiblemente funciona
-			name = self.prev().lexem
+			name = self.peek().lexem
 			self.match_or_error(tokens.TokenType.IDENTIFIER)
 			self.check(tokens.TokenType.ASSIGN)
 			arguments = []
@@ -130,6 +127,10 @@ class ZynkParser:
 			if not parsed:
 				self.error("Expected expression after '='")
 			return zsent.VarStmt(name, parsed)
+		elif self.match(tokens.TokenType.EOF):
+			return None
+		elif self.match(tokens.TokenType.SEMICOLON):
+			return None
 		else:
 			raise SyntaxError(f"Unexpected Token : {self.peek().type}")
 	def algebraic(self, tokens):
@@ -164,7 +165,7 @@ class ZynkParser:
 		return self.tokens[self.pos]
 	def error(self, message):
 		line, column = self.peek().get_pos()
-		raise errors.ZynkError(f"Error at line {line}, column {column}: {message}")
+		raise errors.ZynkPyError(line, column, message)
 	def get_pos(self):
 		return self.peek().get_pos()
 	def get_line(self):

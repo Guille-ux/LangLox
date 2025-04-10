@@ -19,6 +19,9 @@ test_cases = [
     'print "hola" ;',
     'print "adios" ;',
     'print 10 * 5 ;'
+    'print 1 ;',
+    'print 2 ;',
+    'print 3 ;',
+    'print 4 ;',
+    'print 5 ;',
 ]
-
-
