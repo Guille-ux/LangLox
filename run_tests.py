@@ -19,6 +19,7 @@ from src.ast.parser import ZynkParser
 from src.errors import ZynkPyError
 from zynktest import tprint as print_test
 from zynktest import tvar as var_test
+from zynktest import tfunc as func_test
 import sys
 
 def test(test_cases):
@@ -55,6 +56,9 @@ if sys.argv[1] == "print":
     test(test_cases)
 elif sys.argv[1] == "var":
     test_cases = var_test.test_cases
+    test(test_cases)
+elif sys.argv[1] == "func":
+    test_cases = func_test.test_cases
     test(test_cases)
 else:
     print("No test cases found")

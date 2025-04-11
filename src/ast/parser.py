@@ -158,7 +158,6 @@ class ZynkParser:
 				body.pop()
 			parsed = self.block(body)
 			return zsent.FunctionStmt(name, params, parsed)
-		
 		elif self.match(tokens.TokenType.EOF):
 			return None
 		elif self.match(tokens.TokenType.SEMICOLON):
