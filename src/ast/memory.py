@@ -41,11 +41,12 @@ class FuncTable:
     def __str__(self):
         return str(self.symbols)
 class Memory:
-    def __init__(self):
-        self.var_memory = SymbolTable()
-        self.func_memory = FuncTable()
+    def __init__(self, enclosing=None):
+        self.var_memory = SymbolTable(enclosing)
+        self.func_memory = FuncTable(enclosing)
         self.classes = {}
         self.modules = {}
+        self.enclosing = enclosing
     def add_function(self, name, func):
         self.funcs[name] = func
     def add_class(self, name, class_):
@@ -55,12 +56,16 @@ class Memory:
     def get_function(self, name):
         self.func_memory.get(name)
     def get_class(self, name):
-        if self.classes[name]:
+        if  name in self.classes:
             return self.classes[name]
+        elif self.enclosing is not None:
+            return self.enclosing.get_class(name)
         raise ValueError(f"Class '{name}' not defined.")
     def get_module(self, name):
-        if self.modules[name]:
+        if name in self.modules:
             return self.modules[name]
+        elif self.enclosing is not None:
+            return self.enclosing.get_module(name)
         raise ValueError(f"Module '{name}' not defined.")
     def get_variable(self, name):
         self.var_memory.get(name)

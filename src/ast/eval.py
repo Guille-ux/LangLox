@@ -47,7 +47,7 @@ class Visitor:
 
 class ZynkEval(Visitor):
 	def __init__(self, enclosing=None):
-		self.memory = zmem.SymbolTable(enclosing)
+		self.memory = zmem.Memory(enclosing)
 	def visit(self, expr):
 		if isinstance(expr, zexpr.Literal):
 			return self.visit_literal(expr)
