@@ -138,7 +138,6 @@ class ZynkEval(Visitor):
 	def visit_block_stmt(self, stmt):
 		for statement in stmt.statements:
 			self.evaluate(statement)
-		return None
 	def visit_func_stmt(self, stmt):
 		self.memory.add_function(stmt.name, stmt)
 		return stmt
@@ -156,10 +155,13 @@ class ZynkEval(Visitor):
 		subeval = ZynkEval(self.memory)
 		i = 0
 		for arg in args:
-			if i >= len(func.params):
+			if i == len(func.params):
 				break
+			name = func.params[i]
+			print("[DEBUG] Name : ", name)
+			print("[DEBUG] Arg : ", arg)
+			subeval.memory.add_variable(name, self.evaluate(arg))
 			i += 1
-			subeval.memory.add_variable(func.params[args.index(arg)], arg)
 		result = subeval.evaluate(func.body)
 		if stmt.out is not None:
 			self.memory.add_variable(stmt.out, result)

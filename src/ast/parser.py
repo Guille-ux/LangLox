@@ -165,34 +165,27 @@ class ZynkParser:
 			self.match_or_error(tokens.TokenType.IDENTIFIER)
 			self.check(tokens.TokenType.LPAREN)
 			arguments = []
-			argumenti = []
 			while not self.is_at_end():
 				if self.match(tokens.TokenType.RPAREN):
-					if len(argumenti) > 0:
-						arguments.append(argumenti)
-					self.advance()
 					break
 				elif self.match(tokens.TokenType.EOF):
 					raise SyntaxError("Unexpected EOF")
-				argumenti.append(self.advance())
+				arguments.append(self.advance())
 				if self.match(tokens.TokenType.COMMA):
-					arguments.append(argumenti)
-				else:
 					continue
-			if len(arguments) > 0:
-				parsed = []
-				for arg in arguments:
-					if len(arg)==0:
-						continue
-					par = self.algebraic(arg)
-					parsed.append(par)
-			else:
-				parsed = []
+				else:
+					break
+			parsed = []
+			for arg in arguments:
+				parsed.append(self.algebraic([arg]))
+			
 			if self.match(tokens.TokenType.TO):
 				self.match_or_error(tokens.TokenType.IDENTIFIER)
-				name = self.peek().lexem
-				return zsent.CallStmt(name, parsed, name)
+				ou = self.peek().lexem
+				self.advance()
+				return zsent.CallStmt(name, parsed, ou)
 			else:
+				self.advance()
 				return zsent.CallStmt(name, parsed)
 		elif self.match(tokens.TokenType.EOF):
 			return None
@@ -201,7 +194,8 @@ class ZynkParser:
 		elif self.match(tokens.TokenType.RPAREN):
 			return None
 		else:
-			raise SyntaxError(f"Unexpected Token : {self.peek().type}")
+			self.advance()
+			# raise SyntaxError(f"Unexpected Token : {self.peek().type}")
 	def algebraic(self, tokens):
 		return AlgebraicParser(tokens).parse()
 	def block(self, data):
