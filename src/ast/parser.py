@@ -131,6 +131,20 @@ class ZynkParser:
 			name = self.peek().lexem
 			self.match_or_error(tokens.TokenType.IDENTIFIER)
 			self.check(tokens.TokenType.LPAREN)
+			params = []
+			while not self.is_at_end():
+				if self.match(tokens.TokenType.RPAREN):
+					break
+				elif self.match(tokens.TokenType.EOF):
+					raise SyntaxError("Unexpected EOF")
+				params.append(self.advance())
+				self.match_or_error(tokens.TokenType.COMMA)
+			if params and params[-1].type in (tokens.TokenType.RPAREN, tokens.TokenType.EOF):
+				params.pop()
+			if params and len(params) > 0:
+				for param in params:
+					if param.type != tokens.TokenType.IDENTIFIER:
+						self.error("Expected identifier")
 			self.match_or_error(tokens.TokenType.RPAREN)
 			self.check(tokens.TokenType.LBRACE)
 			body = []
@@ -143,7 +157,7 @@ class ZynkParser:
 			if body and body[-1].type in (tokens.TokenType.RBRACE, tokens.TokenType.EOF):
 				body.pop()
 			parsed = self.block(body)
-			return zsent.FunctionStmt(name, parsed)
+			return zsent.FunctionStmt(name, params, parsed)
 		elif self.match(tokens.TokenType.EOF):
 			return None
 		elif self.match(tokens.TokenType.SEMICOLON):
