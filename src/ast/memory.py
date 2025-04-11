@@ -54,7 +54,7 @@ class Memory:
     def add_module(self, name, module):
         self.modules[name] = module
     def get_function(self, name):
-        self.func_memory.get(name)
+        return self.func_memory.get(name)
     def get_class(self, name):
         if  name in self.classes:
             return self.classes[name]
@@ -68,7 +68,7 @@ class Memory:
             return self.enclosing.get_module(name)
         raise ValueError(f"Module '{name}' not defined.")
     def get_variable(self, name):
-        self.var_memory.get(name)
+        return self.var_memory.get(name)
     def add_variable(self, name, value):
         self.var_memory.add(name, value)
     def remove_variable(self, name):

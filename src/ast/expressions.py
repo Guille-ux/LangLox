@@ -48,3 +48,10 @@ class Grouping(Expr):
 		return visitor.visit_grouping(self)
 	def __repr__(self):
 		return f"[{self.expr}]"
+class NullExpr(Expr):
+    def __init__(self):
+        pass
+    def accept(self, visitor):
+        return None
+    def __repr__(self):
+        return "NullExpr"

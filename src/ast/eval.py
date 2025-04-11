@@ -69,6 +69,8 @@ class ZynkEval(Visitor):
 			return self.visit_func_stmt(expr)
 		elif isinstance(expr, zsent.VarExpr):
 			return self.visit_var_expr(expr)
+		elif isinstance(expr, zsent.CallStmt):
+			return self.visit_call_stmt(expr)
 		else:
 			raise ValueError(f"¡Unknow Expression type : {type(expr)}")
 	def visit_literal(self, expr):
@@ -131,7 +133,7 @@ class ZynkEval(Visitor):
 	def visit_var_stmt(self, stmt):
 		value = self.evaluate(stmt.initializer)
 		print(f"Variable {stmt.name} initialized with {value}")
-		self.memory.add(stmt.name, value)
+		self.memory.add_variable(stmt.name, value)
 		return value
 	def visit_block_stmt(self, stmt):
 		for statement in stmt.statements:
@@ -139,9 +141,26 @@ class ZynkEval(Visitor):
 		return None
 	def visit_func_stmt(self, stmt):
 		self.memory.add_function(stmt.name, stmt)
-		return None
+		return stmt
 	def visit_var_expr(self, expr):
-		value = self.memory.get(expr.name)
+		value = self.memory.get_variable(expr.name)
 		if value is None:
 			raise ValueError(f"¡Variable {expr.name} not defined!")
 		return value
+	def visit_call_stmt(self, stmt):
+		result = None
+		func = self.memory.get_function(stmt.fname)
+		if func is None:
+			raise ValueError(f"¡Function {stmt.fname} not defined!")
+		args = [self.evaluate(arg) for arg in stmt.arguments]
+		subeval = ZynkEval(self.memory)
+		i = 0
+		for arg in args:
+			if i >= len(func.params):
+				break
+			i += 1
+			subeval.memory.add_variable(func.params[args.index(arg)], arg)
+		result = subeval.evaluate(func.body)
+		if stmt.out is not None:
+			self.memory.add_variable(stmt.out, result)
+		return result

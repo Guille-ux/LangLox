@@ -67,6 +67,8 @@ class AlgebraicParser:
 			return zexpr.Literal(self.prev().value)
 		elif self.match(tokens.TokenType.NULL):
 			return zexpr.Literal(self.prev().value)
+		elif self.match(tokens.TokenType.RPAREN):
+			return zexpr.NullExpr()
 		raise SyntaxError(f"Unexpected Token: {self.peek().type}")
 	def peek(self):
 		if self.pos < len(self.tokens):
@@ -158,9 +160,45 @@ class ZynkParser:
 				body.pop()
 			parsed = self.block(body)
 			return zsent.FunctionStmt(name, params, parsed)
+		elif self.match(tokens.TokenType.CALL):
+			name = self.peek().lexem
+			self.match_or_error(tokens.TokenType.IDENTIFIER)
+			self.check(tokens.TokenType.LPAREN)
+			arguments = []
+			argumenti = []
+			while not self.is_at_end():
+				if self.match(tokens.TokenType.RPAREN):
+					if len(argumenti) > 0:
+						arguments.append(argumenti)
+					self.advance()
+					break
+				elif self.match(tokens.TokenType.EOF):
+					raise SyntaxError("Unexpected EOF")
+				argumenti.append(self.advance())
+				if self.match(tokens.TokenType.COMMA):
+					arguments.append(argumenti)
+				else:
+					continue
+			if len(arguments) > 0:
+				parsed = []
+				for arg in arguments:
+					if len(arg)==0:
+						continue
+					par = self.algebraic(arg)
+					parsed.append(par)
+			else:
+				parsed = []
+			if self.match(tokens.TokenType.TO):
+				self.match_or_error(tokens.TokenType.IDENTIFIER)
+				name = self.peek().lexem
+				return zsent.CallStmt(name, parsed, name)
+			else:
+				return zsent.CallStmt(name, parsed)
 		elif self.match(tokens.TokenType.EOF):
 			return None
 		elif self.match(tokens.TokenType.SEMICOLON):
+			return None
+		elif self.match(tokens.TokenType.RPAREN):
 			return None
 		else:
 			raise SyntaxError(f"Unexpected Token : {self.peek().type}")

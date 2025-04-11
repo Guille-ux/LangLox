@@ -49,6 +49,13 @@ def test(test_cases):
             print("Test case passed")
         except Exception as e:
             print(f"Error: {e}")
+            print(f"Test case: {test_case}")
+            print("-----Tokens-----")
+            for token in tokens:
+                print(token)
+            print("-----Parsed-----")
+            print(parsed)
+            print("-----Evaluated-----")
             continue
 
 if sys.argv[1] == "print":

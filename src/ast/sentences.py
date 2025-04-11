@@ -78,13 +78,14 @@ class ForStmt(Stmt): # For statement
     def __repr__(self):
         return f"For : {self.init} {self.condition} {self.change} {self.body}"
 class CallStmt(Stmt): # Call statement
-    def __init__(self, callee, arguments):
-        self.callee = callee
+    def __init__(self, callee, arguments, out=None):
+        self.fname = callee
         self.arguments = arguments
+        self.out = out
     def accept(self, visitor):
         return visitor.visit_call_stmt(self)
     def __repr__(self):
-        return f"Call : {self.callee} {self.arguments}"
+        return f"Call : {self.fname} {self.arguments}"
 class NewStmt(Stmt): # New statement
     def __init__(self, class_name, arguments):
         self.class_name = class_name
