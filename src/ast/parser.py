@@ -127,6 +127,23 @@ class ZynkParser:
 			if not parsed:
 				self.error("Expected expression after '='")
 			return zsent.VarStmt(name, parsed)
+		elif self.match(tokens.TokenType.FUNC):
+			name = self.peek().lexem
+			self.match_or_error(tokens.TokenType.IDENTIFIER)
+			self.check(tokens.TokenType.LPAREN)
+			self.match_or_error(tokens.TokenType.RPAREN)
+			self.check(tokens.TokenType.LBRACE)
+			body = []
+			while not self.is_at_end():
+				if self.match(tokens.TokenType.RBRACE):
+					break
+				elif self.match(tokens.TokenType.EOF):
+					raise SyntaxError("Unexpected EOF")
+				body.append(self.advance())
+			if body and body[-1].type in (tokens.TokenType.RBRACE, tokens.TokenType.EOF):
+				body.pop()
+			parsed = self.block(body)
+			return zsent.FunctionStmt(name, parsed)
 		elif self.match(tokens.TokenType.EOF):
 			return None
 		elif self.match(tokens.TokenType.SEMICOLON):
@@ -135,6 +152,17 @@ class ZynkParser:
 			raise SyntaxError(f"Unexpected Token : {self.peek().type}")
 	def algebraic(self, tokens):
 		return AlgebraicParser(tokens).parse()
+	def block(self, tokens):
+		statements = []
+		while not self.is_at_end():
+			if self.match(tokens.TokenType.RBRACE):
+				break
+			elif self.match(tokens.TokenType.EOF):
+				raise SyntaxError("Unexpected EOF")
+			stmt = self.parse_expr()
+			if stmt is not None:
+				statements.append(stmt)
+		return zsent.BlockStmt(statements)
 	def advance(self):
 		if not self.is_at_end():
 			self.pos += 1
