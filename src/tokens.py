@@ -22,6 +22,7 @@ class TokenType(Enum):
 	NULL = "NULL"
 	STRING = "STRING"
 	BOOL = "BOOL"
+	ARRAY = "ARRAY"
 	
 	#IDENTIFICADORES
 	IDENTIFIER = "IDENTIFIER"
@@ -38,6 +39,7 @@ class TokenType(Enum):
 	THIS = "THIS"
 	TRUE = "TRUE"
 	VAR = "VAR"
+	LIST = "LIST"
 	WHILE = "WHILE"
 	CALL = "CALL"
 	NEW = "NEW"
@@ -62,6 +64,8 @@ class TokenType(Enum):
 	
 	
 	#delimitadores
+	LBRACKET = "["
+	RBRACKET = "]"
 	LPAREN = "("
 	RPAREN = ")"
 	LBRACE = "{"
@@ -72,6 +76,7 @@ class TokenType(Enum):
 	#Otros tipos
 	EOF = "EOF"
 	DOT = "."
+	COLON = ":"
 	SECURITY = "SECURITY"
 
 	#built-in

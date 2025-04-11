@@ -160,6 +160,9 @@ class ZynkLexer:
 		elif self.match_sequence("super"):
 			self.add_token(tokens.TokenType.SUPER, "super")
 			return True
+		elif self.match_sequence("list"):
+			self.add_token(tokens.TokenType.LIST, "list")
+			return True
 	def scan_three(self, char): # Para los literales
 		if char == '"':
 			if self.skip_string():
@@ -179,6 +182,15 @@ class ZynkLexer:
 		elif char == "\n":
 			self.line += 1
 			self.column = 1
+			return True
+		elif char == "[":
+			self.add_token(tokens.TokenType.LBRACKET, "[")
+			return True
+		elif char == "]":
+			self.add_token(tokens.TokenType.RBRACKET, "]")
+			return True
+		elif char == ":":
+			self.add_token(tokens.TokenType.COLON, ":")
 			return True
 		elif char == "(":
 			self.add_token(tokens.TokenType.LPAREN, "(")
