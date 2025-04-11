@@ -48,7 +48,7 @@ class Memory:
         self.modules = {}
         self.enclosing = enclosing
     def add_function(self, name, func):
-        self.funcs[name] = func
+        self.func_memory[name] = func
     def add_class(self, name, class_):
         self.classes[name] = class_
     def add_module(self, name, module):

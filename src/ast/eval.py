@@ -65,12 +65,8 @@ class ZynkEval(Visitor):
 			return self.visit_var_stmt(expr)
 		elif isinstance(expr, zsent.BlockStmt):
 			return self.visit_block_stmt(expr)
-		elif isinstance(expr, zsent.IfStmt):
-			return self.visit_if_stmt(expr)
-		elif isinstance(expr, zsent.WhileStmt):
-			return self.visit_while_stmt(expr)
-		elif isinstance(expr, zsent.ForStmt):
-			return self.visit_for_stmt(expr)
+		elif isinstance(expr, zsent.FunctionStmt):
+			return self.visit_func_stmt(expr)
 		elif isinstance(expr, zsent.VarExpr):
 			return self.visit_var_expr(expr)
 		else:
@@ -141,44 +137,8 @@ class ZynkEval(Visitor):
 		for statement in stmt.statements:
 			self.evaluate(statement)
 		return None
-	def visit_if_stmt(self, stmt):
-		if self.evaluate(stmt.condition):
-			return self.evaluate(stmt.then_branch)
-		elif stmt.else_branch:
-			return self.evaluate(stmt.else_branch)
-		return None
-	def visit_while_stmt(self, stmt):
-		while self.evaluate(stmt.condition):
-			self.evaluate(stmt.body)
-		return None
-	def visit_for_stmt(self, stmt):
-		self.evaluate(stmt.init)
-		while self.evaluate(stmt.condition):
-			self.evaluate(stmt.body)
-			self.evaluate(stmt.change)
-		return None
-	def visit_call_stmt(self, stmt):
-		next = ZynkEval(enclosing=self.memory)
-		callee = next.evaluate(stmt.callee)
-		args = [next.evaluate(arg) for arg in stmt.arguments]
-		return callee(*args)
-	def visit_new_stmt(self, stmt):
-		class_name = self.evaluate(stmt.class_name)
-		args = [self.evaluate(arg) for arg in stmt.arguments]
-		return class_name(*args)
-	def visit_import_stmt(self, stmt):
-		module_name = self.evaluate(stmt.module_name)
-		return module_name
-	def visit_this_stmt(self, stmt):
-		return self.evaluate(stmt.this)
 	def visit_func_stmt(self, stmt):
-		func_name = stmt.func_name
-		params = stmt.params
-		body = stmt.body
-		return func_name, params, body
-	def visit_return_stmt(self, stmt):
-		if stmt.value:
-			return self.evaluate(stmt.value)
+		self.memory.add_function(stmt.name, stmt)
 		return None
 	def visit_var_expr(self, expr):
 		value = self.memory.get(expr.name)
