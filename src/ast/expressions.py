@@ -18,11 +18,11 @@ class Expr:
 		raise NotImplementedError()
 class Literal(Expr):
 	def __init__(self, value):
-		self.value = value
+		self.valor = value
 	def accept(self, visitor):
 		return visitor.visit_literal(self)
 	def __repr__(self):
-		return f"{self.value}"
+		return f"{self.valor}"
 class Binary(Expr):
 	def __init__(self, left, operator, right):
 		self.left = left

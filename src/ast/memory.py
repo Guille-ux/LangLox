@@ -10,7 +10,7 @@ class SymbolTable:
         if name in self.symbols:
             return self.symbols[name]
         if self.enclosing:
-            return self.enclosing.get(name)
+            return self.enclosing.var_memory.get(name)
         raise ValueError(f"Variable '{name}' not defined.")
 
     def remove(self, name):
@@ -31,7 +31,7 @@ class FuncTable:
         if name in self.symbols:
             return self.symbols[name]
         if self.enclosing:
-            return self.enclosing.get(name)
+            return self.enclosing.func_memory.get(name)
         raise ValueError(f"Function '{name}' not defined.")
 
     def remove(self, name):
@@ -83,14 +83,3 @@ class Memory:
         del self.classes[name]
     def remove_module(self, name):
         del self.classes[name]
-    def get(self, name): # idk this is here because python was silly
-        if name in self.var_memory.symbols:
-            return self.var_memory.get(name)
-        elif name in self.func_memory.symbols:
-            return self.func_memory.get(name)
-        elif name in self.classes:
-            return self.get_class(name)
-        elif name in self.modules:
-            return self.get_module(name)
-        else:
-            raise ValueError(f"'{name}' not defined.")

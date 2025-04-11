@@ -132,7 +132,7 @@ class ZynkParser:
 		elif self.match(tokens.TokenType.FUNC):
 			name = self.peek().lexem
 			self.match_or_error(tokens.TokenType.IDENTIFIER)
-			self.check(tokens.TokenType.LPAREN)
+			self.match_or_error(tokens.TokenType.LPAREN)
 			params = []
 			while not self.is_at_end():
 				if self.match(tokens.TokenType.RPAREN):
@@ -170,15 +170,13 @@ class ZynkParser:
 					break
 				elif self.match(tokens.TokenType.EOF):
 					raise SyntaxError("Unexpected EOF")
-				arguments.append(self.advance())
+				toin = self.advance()
+				arguments.append(toin)
 				if self.match(tokens.TokenType.COMMA):
 					continue
 				else:
 					break
-			parsed = []
-			for arg in arguments:
-				parsed.append(self.algebraic([arg]))
-			
+			parsed = [self.algebraic([arg]) for arg in arguments]
 			if self.match(tokens.TokenType.TO):
 				self.match_or_error(tokens.TokenType.IDENTIFIER)
 				ou = self.peek().lexem
@@ -246,3 +244,19 @@ class ZynkParser:
 		return self.peek().value
 	def get_lexem(self):
 		return self.peek().lexem
+	def parse_args(self):
+		args = []
+		argis = []
+		while not self.is_at_end():
+			if self.match(tokens.TokenType.RPAREN):
+				break
+			elif self.match(tokens.TokenType.EOF):
+				raise SyntaxError("Unexpected EOF")
+			arg = self.advance()
+			argis.append(arg)
+			if self.match(tokens.TokenType.COMMA):
+				args.append(self.algebraic(argis))
+				argis = []
+			else:
+				break
+		return args

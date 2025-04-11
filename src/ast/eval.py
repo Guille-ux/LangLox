@@ -74,7 +74,7 @@ class ZynkEval(Visitor):
 		else:
 			raise ValueError(f"¡Unknow Expression type : {type(expr)}")
 	def visit_literal(self, expr):
-		return expr.value
+		return expr.valor
 	def visit_binary(self, expr):
 		left = expr.left.accept(self)
 		right = expr.right.accept(self)
@@ -147,22 +147,30 @@ class ZynkEval(Visitor):
 			raise ValueError(f"¡Variable {expr.name} not defined!")
 		return value
 	def visit_call_stmt(self, stmt):
-		result = None
+		# Obtener la función desde la tabla de símbolos
 		func = self.memory.get_function(stmt.fname)
 		if func is None:
 			raise ValueError(f"¡Function {stmt.fname} not defined!")
-		args = [self.evaluate(arg) for arg in stmt.arguments]
+
+		# Validar el número de argumentos
+
+		# Crear un nuevo entorno para la función
 		subeval = ZynkEval(self.memory)
-		i = 0
-		for arg in args:
-			if i == len(func.params):
-				break
-			name = func.params[i]
-			print("[DEBUG] Name : ", name)
-			print("[DEBUG] Arg : ", arg)
-			subeval.memory.add_variable(name, self.evaluate(arg))
-			i += 1
-		result = subeval.evaluate(func.body)
+
+		# Asignar los argumentos a los parámetros
+		for param, arg in zip(func.params, stmt.arguments):
+			value = self.evaluate(arg)
+			subeval.memory.add_variable(param.name, value)
+			print(f"[DEBUG] Param: {param}, Arg: {value}")
+
+		# Evaluar el cuerpo de la función
+		result = None
+		for statement in func.body.statements:
+			result = subeval.evaluate(statement)
+
+		# Si hay un `TO`, almacenar el resultado en la variable especificada
 		if stmt.out is not None:
 			self.memory.add_variable(stmt.out, result)
+			print(f"[DEBUG] Result stored in '{stmt.out}': {result}")
+
 		return result
