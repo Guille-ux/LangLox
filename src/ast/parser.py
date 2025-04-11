@@ -137,18 +137,15 @@ class ZynkParser:
 					break
 				elif self.match(tokens.TokenType.EOF):
 					raise SyntaxError("Unexpected EOF")
-				params.append(self.advance())
-				if self.match(tokens.TokenType.RPAREN):
+				param = self.advance()
+				if param.type == tokens.TokenType.IDENTIFIER:
+					params.append(zsent.VarExpr(param.lexem))
+				if self.match(tokens.TokenType.COMMA):
+					continue
+				elif self.match(tokens.TokenType.RPAREN):
 					break
 				elif self.match(tokens.TokenType.EOF):
 					raise SyntaxError("Unexpected EOF")
-				self.match_or_error(tokens.TokenType.COMMA)
-			if params and params[-1].type in (tokens.TokenType.RPAREN, tokens.TokenType.EOF):
-				params.pop()
-			if params and len(params) > 0:
-				for param in params:
-					if param.type != tokens.TokenType.IDENTIFIER:
-						self.error("Expected identifier")
 			self.check(tokens.TokenType.LBRACE)
 			body = []
 			while not self.is_at_end():
