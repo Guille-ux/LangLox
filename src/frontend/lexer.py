@@ -163,6 +163,9 @@ class ZynkLexer:
 		elif self.match_sequence("list"):
 			self.add_token(tokens.TokenType.LIST, "list")
 			return True
+		elif self.match_sequence("to"):
+			self.add_token(tokens.TokenType.TO, "to")
+			return True
 	def scan_three(self, char): # Para los literales
 		if char == '"':
 			if self.skip_string():

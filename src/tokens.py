@@ -44,6 +44,7 @@ class TokenType(Enum):
 	CALL = "CALL"
 	NEW = "NEW"
 	EXTENDS = "EXTENDS"
+	TO = "TO"
 
 	#operands
 	PLUS = "+"
