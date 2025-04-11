@@ -138,6 +138,10 @@ class ZynkParser:
 				elif self.match(tokens.TokenType.EOF):
 					raise SyntaxError("Unexpected EOF")
 				params.append(self.advance())
+				if self.match(tokens.TokenType.RPAREN):
+					break
+				elif self.match(tokens.TokenType.EOF):
+					raise SyntaxError("Unexpected EOF")
 				self.match_or_error(tokens.TokenType.COMMA)
 			if params and params[-1].type in (tokens.TokenType.RPAREN, tokens.TokenType.EOF):
 				params.pop()
@@ -145,7 +149,6 @@ class ZynkParser:
 				for param in params:
 					if param.type != tokens.TokenType.IDENTIFIER:
 						self.error("Expected identifier")
-			self.match_or_error(tokens.TokenType.RPAREN)
 			self.check(tokens.TokenType.LBRACE)
 			body = []
 			while not self.is_at_end():
@@ -166,16 +169,10 @@ class ZynkParser:
 			raise SyntaxError(f"Unexpected Token : {self.peek().type}")
 	def algebraic(self, tokens):
 		return AlgebraicParser(tokens).parse()
-	def block(self, tokens):
+	def block(self, data):
 		statements = []
-		while not self.is_at_end():
-			if self.match(tokens.TokenType.RBRACE):
-				break
-			elif self.match(tokens.TokenType.EOF):
-				raise SyntaxError("Unexpected EOF")
-			stmt = self.parse_expr()
-			if stmt is not None:
-				statements.append(stmt)
+		tmp = ZynkParser(data)
+		statements = tmp.parse()
 		return zsent.BlockStmt(statements)
 	def advance(self):
 		if not self.is_at_end():
