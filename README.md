@@ -42,7 +42,7 @@ Result → 50
 
 ## Tests
 
-### Function Definition Test
+### Function Test
 ```bash
 [line 1, column 11] Error: Unexpected Token:  
 [line 1, column 12] Error: Unexpected Token: (
@@ -65,7 +65,7 @@ Token of the type TokenType.EOF with the value None with the lexem
 -----Parsed-----
 [Function : hola  [] Block : [Print : Hola]]
 -----Evaluated-----
-None
+Function : hola  [] Block : [Print : Hola]
 -----End-----
 Test case passed
 [line 1, column 12] Error: Unexpected Token:  
@@ -89,7 +89,41 @@ Token of the type TokenType.EOF with the value None with the lexem
 -----Parsed-----
 [Function : adios  [] Block : [Print : Adios]]
 -----Evaluated-----
-None
+Function : adios  [] Block : [Print : Adios]
+-----End-----
+Test case passed
+[line 1, column 12] Error: Unexpected Token:  
+[line 1, column 13] Error: Unexpected Token: (
+[line 1, column 46] Error: Unexpected Token:  
+[line 1, column 47] Error: Unexpected Token: (
+Lexer Passed
+Parser Passed
+Evaluating...
+Adios
+Evaluator Passed
+Test case: func adios () { print "Adios" ; } call adios ( ) ;
+-----Tokens-----
+Token of the type TokenType.FUNC with the value None with the lexem func
+Token of the type TokenType.IDENTIFIER with the value None with the lexem adios 
+Token of the type TokenType.LPAREN with the value None with the lexem (
+Token of the type TokenType.RPAREN with the value None with the lexem )
+Token of the type TokenType.LBRACE with the value None with the lexem {
+Token of the type TokenType.PRINT with the value None with the lexem print
+Token of the type TokenType.STRING with the value Adios with the lexem "Adios"
+Token of the type TokenType.SEMICOLON with the value None with the lexem ;
+Token of the type TokenType.RBRACE with the value None with the lexem }
+Token of the type TokenType.CALL with the value None with the lexem call
+Token of the type TokenType.IDENTIFIER with the value None with the lexem adios 
+Token of the type TokenType.LPAREN with the value None with the lexem (
+Token of the type TokenType.RPAREN with the value None with the lexem )
+Token of the type TokenType.SEMICOLON with the value None with the lexem ;
+Token of the type TokenType.EOF with the value None with the lexem 
+-----Parsed-----
+[Function : adios  [] Block : [Print : Adios], Call : adios  [NullExpr]]
+-----Evaluated-----
+Function : adios  [] Block : [Print : Adios]
+Adios
+Adios
 -----End-----
 Test case passed
 [line 1, column 11] Error: Unexpected Token:  
@@ -114,9 +148,89 @@ Token of the type TokenType.SEMICOLON with the value None with the lexem ;
 Token of the type TokenType.RBRACE with the value None with the lexem }
 Token of the type TokenType.EOF with the value None with the lexem 
 -----Parsed-----
-[Function : copy  [VarExpr : x ] Block : [Print : VarExpr : x ]]
+[Function : copy  ['x '] Block : [Print : VarExpr : x ]]
 -----Evaluated-----
-None
+Function : copy  ['x '] Block : [Print : VarExpr : x ]
+-----End-----
+Test case passed
+[line 1, column 11] Error: Unexpected Token:  
+[line 1, column 12] Error: Unexpected Token: (
+[line 1, column 15] Error: Unexpected Token:  
+[line 1, column 27] Error: Unexpected Token:  
+[line 1, column 41] Error: Unexpected Token:  
+[line 1, column 42] Error: Unexpected Token: (
+Lexer Passed
+Parser Passed
+Evaluating...
+[DEBUG] Param: x , Arg: 1
+1
+Evaluator Passed
+Test case: func copy ( x ) { print x ; } call copy ( 1 ) ;
+-----Tokens-----
+Token of the type TokenType.FUNC with the value None with the lexem func
+Token of the type TokenType.IDENTIFIER with the value None with the lexem copy 
+Token of the type TokenType.LPAREN with the value None with the lexem (
+Token of the type TokenType.IDENTIFIER with the value None with the lexem x 
+Token of the type TokenType.RPAREN with the value None with the lexem )
+Token of the type TokenType.LBRACE with the value None with the lexem {
+Token of the type TokenType.PRINT with the value None with the lexem print
+Token of the type TokenType.IDENTIFIER with the value None with the lexem x 
+Token of the type TokenType.SEMICOLON with the value None with the lexem ;
+Token of the type TokenType.RBRACE with the value None with the lexem }
+Token of the type TokenType.CALL with the value None with the lexem call
+Token of the type TokenType.IDENTIFIER with the value None with the lexem copy 
+Token of the type TokenType.LPAREN with the value None with the lexem (
+Token of the type TokenType.INT with the value 1 with the lexem 1 
+Token of the type TokenType.RPAREN with the value None with the lexem )
+Token of the type TokenType.SEMICOLON with the value None with the lexem ;
+Token of the type TokenType.EOF with the value None with the lexem 
+-----Parsed-----
+[Function : copy  ['x '] Block : [Print : VarExpr : x ], Call : copy  [1]]
+-----Evaluated-----
+Function : copy  ['x '] Block : [Print : VarExpr : x ]
+[DEBUG] Param: x , Arg: 1
+1
+1
+-----End-----
+Test case passed
+[line 1, column 11] Error: Unexpected Token:  
+[line 1, column 12] Error: Unexpected Token: (
+[line 1, column 15] Error: Unexpected Token:  
+[line 1, column 28] Error: Unexpected Token:  
+[line 1, column 42] Error: Unexpected Token:  
+[line 1, column 43] Error: Unexpected Token: (
+Lexer Passed
+Parser Passed
+Evaluating...
+[DEBUG] Param: x , Arg: Hola
+Hola
+Evaluator Passed
+Test case: func copy ( x  ) { print x ; } call copy ( "Hola" ) ;
+-----Tokens-----
+Token of the type TokenType.FUNC with the value None with the lexem func
+Token of the type TokenType.IDENTIFIER with the value None with the lexem copy 
+Token of the type TokenType.LPAREN with the value None with the lexem (
+Token of the type TokenType.IDENTIFIER with the value None with the lexem x 
+Token of the type TokenType.RPAREN with the value None with the lexem )
+Token of the type TokenType.LBRACE with the value None with the lexem {
+Token of the type TokenType.PRINT with the value None with the lexem print
+Token of the type TokenType.IDENTIFIER with the value None with the lexem x 
+Token of the type TokenType.SEMICOLON with the value None with the lexem ;
+Token of the type TokenType.RBRACE with the value None with the lexem }
+Token of the type TokenType.CALL with the value None with the lexem call
+Token of the type TokenType.IDENTIFIER with the value None with the lexem copy 
+Token of the type TokenType.LPAREN with the value None with the lexem (
+Token of the type TokenType.STRING with the value Hola with the lexem "Hola"
+Token of the type TokenType.RPAREN with the value None with the lexem )
+Token of the type TokenType.SEMICOLON with the value None with the lexem ;
+Token of the type TokenType.EOF with the value None with the lexem 
+-----Parsed-----
+[Function : copy  ['x '] Block : [Print : VarExpr : x ], Call : copy  [Hola]]
+-----Evaluated-----
+Function : copy  ['x '] Block : [Print : VarExpr : x ]
+[DEBUG] Param: x , Arg: Hola
+Hola
+Hola
 -----End-----
 Test case passed
 ```

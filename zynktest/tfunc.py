@@ -4,5 +4,5 @@ test_cases = [
     'func adios () { print "Adios" ; } call adios ( ) ;',
     'func copy ( x ) { print x ; }',
     'func copy ( x ) { print x ; } call copy ( 1 ) ;',
-    'func copy ( x ) { print x ; } call copy ( "Hola" ) ;'
+    'func copy ( x  ) { print x ; } call copy ( "Hola" ) ;'
 ]

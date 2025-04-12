@@ -160,7 +160,7 @@ class ZynkEval(Visitor):
 		# Asignar los argumentos a los parámetros
 		for param, arg in zip(func.params, stmt.arguments):
 			value = self.evaluate(arg)
-			subeval.memory.add_variable(param.name, value)
+			subeval.memory.add_variable(param, value)
 			print(f"[DEBUG] Param: {param}, Arg: {value}")
 
 		# Evaluar el cuerpo de la función

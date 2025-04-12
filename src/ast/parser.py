@@ -133,6 +133,7 @@ class ZynkParser:
 			name = self.peek().lexem
 			self.match_or_error(tokens.TokenType.IDENTIFIER)
 			self.match_or_error(tokens.TokenType.LPAREN)
+			self.pos -= 1
 			params = []
 			while not self.is_at_end():
 				if self.match(tokens.TokenType.RPAREN):
@@ -141,7 +142,7 @@ class ZynkParser:
 					raise SyntaxError("Unexpected EOF")
 				param = self.advance()
 				if param.type == tokens.TokenType.IDENTIFIER:
-					params.append(zsent.VarExpr(param.lexem))
+					params.append(param.lexem)
 				if self.match(tokens.TokenType.COMMA):
 					continue
 				elif self.match(tokens.TokenType.RPAREN):
