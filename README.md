@@ -10,15 +10,19 @@ The Actual Objective is:
 - AST
     - [x] Print
     - [x] Variables
-    - [ ] Functions
+    - [x] Functions
     - [ ] Classes
     - [ ] Input
     - [ ] Import
+    - [ ] Arrays
+    - [ ] Conditionals
+    - [ ] elif's
 - [x] Lexer
+    - [ ] Castellano (Spanish)
+    - [x] English
+    - [ ] Galego (Galician)
 - [ ] Bytecode
-- [ ] Castellano (Spanish)
-- [ ] English
-- [ ] Galego (Galician)
+
 
 ## What i have actually?
 ```bash
