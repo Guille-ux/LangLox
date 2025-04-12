@@ -17,11 +17,14 @@ The Actual Objective is:
     - [ ] Arrays
     - [ ] Conditionals
     - [ ] elif's
+    - [ ] Loops (while and for)
 - [x] Lexer
     - [ ] Castellano (Spanish)
     - [x] English
     - [ ] Galego (Galician)
 - [ ] Bytecode
+- [ ] Standard Library
+- [ ] StandAlone (yes for make OS, low level with object oriented programming???)
 
 
 ## What i have actually?
