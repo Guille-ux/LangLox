@@ -301,7 +301,7 @@ class ZynkLexer:
 				self.current = ret_point
 				return False
 			i += 1
-		if self.match(" "):
+		if self.peek() not in self.var_set:
 			return True
 		else:
 			self.current = ret_point
