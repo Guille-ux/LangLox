@@ -20,6 +20,7 @@ from src.errors import ZynkPyError
 from zynktest import tprint as print_test
 from zynktest import tvar as var_test
 from zynktest import tfunc as func_test
+from zynktest import tif as if_test
 import sys
 
 def test(test_cases):
@@ -66,6 +67,9 @@ elif sys.argv[1] == "var":
     test(test_cases)
 elif sys.argv[1] == "func":
     test_cases = func_test.test_cases
+    test(test_cases)
+elif sys.argv[1] == "if":
+    test_cases = if_test.test_cases
     test(test_cases)
 else:
     print("No test cases found")

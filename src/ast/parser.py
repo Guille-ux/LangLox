@@ -27,7 +27,7 @@ class AlgebraicParser:
 		return self.expr()
 	def expr(self):
 		term1 = self.term()
-		while self.match(tokens.TokenType.PLUS) or self.match(tokens.TokenType.MINUS):
+		while self.match(tokens.TokenType.PLUS) or self.match(tokens.TokenType.MINUS) or self.match(tokens.TokenType.EQUALS) or self.match(tokens.TokenType.GREATER) or self.match(tokens.TokenType.GREATER_EQUAL) or self.match(tokens.TokenType.LESS) or self.match(tokens.TokenType.LESS_EQUAL) or self.match(tokens.TokenType.NOT_EQUAL) or self.match(tokens.TokenType.OR) or self.match(tokens.TokenType.AND) or self.match(tokens.TokenType.XOR):
 			if self.peek().type == tokens.TokenType.SEMICOLON:
 				return term1
 			op = self.prev().lexem
@@ -186,6 +186,45 @@ class ZynkParser:
 			else:
 				self.advance()
 				return zsent.CallStmt(name, parsed)
+		elif self.match(tokens.TokenType.IF):
+			self.match_or_error(tokens.TokenType.LPAREN)
+			self.pos -= 1
+			args = []
+			while not self.is_at_end():
+				if self.match(tokens.TokenType.RPAREN):
+					break
+				elif self.match(tokens.TokenType.EOF):
+					raise SyntaxError("Unexpected EOF")
+				args.append(self.advance())
+			parsed = self.algebraic(args)
+			if not self.check(tokens.TokenType.LBRACE):
+				raise SyntaxError("Expected Block")
+			body = []
+			while not self.is_at_end():
+				if self.match(tokens.TokenType.RBRACE):
+					break
+				elif self.match(tokens.TokenType.EOF):
+					raise SyntaxError("Unexpected EOF")
+				body.append(self.advance())
+			if body and body[-1].type in (tokens.TokenType.RBRACE, tokens.TokenType.EOF):
+				body.pop()
+			then = self.block(body)
+			if self.match(tokens.TokenType.ELSE):
+				if not self.check(tokens.TokenType.LBRACE):
+					raise SyntaxError("Expected Block")
+				else_body = []
+				while not self.is_at_end():
+					if self.match(tokens.TokenType.RBRACE):
+						break
+					elif self.match(tokens.TokenType.EOF):
+						raise SyntaxError("Unexpected EOF")
+					else_body.apppend(self.advance())
+				if else_body and else_body[-1].type in (tokens.TokenType.RBRACE, tokens.TokenType.EOF):
+					else_body.pop()
+				else_t = self.block(else_body)
+				return zsent.IfStmt(parsed, then, else_t)
+			else:
+				return zsent.IfStmt(parsed, then)
 		elif self.match(tokens.TokenType.EOF):
 			return None
 		elif self.match(tokens.TokenType.SEMICOLON):
