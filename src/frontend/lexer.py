@@ -273,21 +273,25 @@ class ZynkLexer:
 	def add_token(self, token_type, lexeme="", literal=None):
 
 		self.tokens.append(tokens.Token(token_type, lexeme, literal, self.line, self.column))
-	def num_lexer(self): #una utilidad para tokenizar números, se le llama cuando se encuentra un número
-		consumed = False
-		while not self.is_at_end():
-			char = self.advance()
-			if consumed == True:
-				if not self.peek().isdigit():
-					break #we have readed the complet number
-			elif consumed == False:
-				if char == ".":
-					consumed = True
-				elif self.peek().isdigit():
-					pass
-				else:
-					break
-		return consumed
+    def num_lexer(self):
+        consumed = False
+        self.current -= 1
+        self.column -= 1
+        while not self.is_at_end():
+            char = self.advance()
+            if consumed:
+                if not char.isdigit():
+                    self.current -= 1
+                    break
+            else:
+                if char==".":
+                    consumed = True
+                elif char.isdigit():
+                    pass
+                else:
+                    self.current -= 1
+                    break
+        return consumed
 	def get_actual(self):
 		return self.source[self.current-1]
 	def match_sequence(self, to_prove):
